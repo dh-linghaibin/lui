@@ -23,7 +23,7 @@ lui_obj_t *lui_get_root(void) {
 }
 
 lui_obj_t *lui_create_obj( int x, int y, int width, int length, void * val,
-		void (*design) (struct _lui_obj_t * obj,lui_point_t *point) ) {
+		void (*design) (struct _lui_obj_t * obj) ) {
 	lui_obj_t * obj;
     obj = (lui_obj_t *)lui_malloc(sizeof(lui_obj_t));
     if( obj == NULL ) {
@@ -86,6 +86,21 @@ static lui_obj_t * _lui_get_last_child(lui_obj_t * obj) {
 
 void lui_obj_add_brother(lui_obj_t * obj, lui_obj_t * brother) {
 	lui_obj_t * t;
+	if( (obj == NULL) || (brother == NULL) )return;
+	if(brother->father == NULL) {
+		if(obj->father != NULL) {
+			brother->layout.point.x += obj->father->layout.point.x;
+			brother->layout.point.y += obj->father->layout.point.y;
+		}
+	} else {
+		brother->layout.point.x -= brother->father->layout.point.x;
+		brother->layout.point.y -= brother->father->layout.point.y;
+
+		if(obj->father != NULL) {
+			brother->layout.point.x += obj->father->layout.point.x;
+			brother->layout.point.y += obj->father->layout.point.y;
+		}
+	}
     t = _lui_get_last_brother(obj);
     brother->father = obj->father;
     t->brother = brother;
@@ -93,6 +108,17 @@ void lui_obj_add_brother(lui_obj_t * obj, lui_obj_t * brother) {
 
 void lui_obj_add_child(lui_obj_t * obj, lui_obj_t * child) {
 	lui_obj_t * t;
+	if( (obj == NULL) || (child == NULL) )return;
+	if(child->father == NULL) {
+		child->layout.point.x += obj->layout.point.x;
+		child->layout.point.y += obj->layout.point.y;
+	} else {
+		child->layout.point.x -= child->father->layout.point.x;
+		child->layout.point.y -= child->father->layout.point.y;
+
+		child->layout.point.x += obj->layout.point.x;
+		child->layout.point.y += obj->layout.point.y;
+	}
     t = _lui_get_last_child(obj);
     child->father = obj;
     if(obj->child == NULL) {
@@ -143,19 +169,19 @@ void lui_obj_distroy(lui_obj_t ** obj) {
 	}
 }
 
-static void lui_obj_get_father_layout(lui_obj_t * obj, lui_layout_t * layout) {
+static void _lui_obj_get_father_layout(lui_obj_t * obj, lui_layout_t * layout) {
 	layout->point.x = 0;
 	layout->point.y = 0;
 	layout->size.width = LCD_WIDTH;
 	layout->size.length = LCD_LENGTH;
 	lui_obj_t * f_obj = obj->father;
 
-	if(f_obj != NULL) {
-		layout->point.x = f_obj->layout.point.x;
-		layout->point.y = f_obj->layout.point.y;
-		layout->size.width = f_obj->layout.size.width;
-		layout->size.length = f_obj->layout.size.length;
-	}
+//	if(f_obj != NULL) {
+//		layout->point.x = f_obj->layout.point.x;
+//		layout->point.y = f_obj->layout.point.y;
+//		layout->size.width = f_obj->layout.size.width;
+//		layout->size.length = f_obj->layout.size.length;
+//	}
 }
 
 extern lui_layout_t f_layout;
@@ -165,30 +191,12 @@ void lui_obj_traverse(lui_obj_t * obj) {
         return;
     } else {
     	if(obj->design != NULL) {
-    		lui_point_t point;
-    		point.x = 0;
-    		point.y = 0;
-			lui_obj_coupoint(obj,&point);
-			point.x += obj->layout.point.x;
-			point.y += obj->layout.point.y;
-
-			lui_obj_get_father_layout(obj,&f_layout);
-
-			obj->design(obj,&point);
+    		_lui_obj_get_father_layout(obj,&f_layout);
+			obj->design(obj);
     	}
         lui_obj_traverse(obj->child);
         lui_obj_traverse(obj->brother);
     }
-}
-
-void lui_obj_coupoint(lui_obj_t * obj, lui_point_t * point) {
-	if(obj->father == NULL) {
-		return;
-	} else {
-		point->x += obj->father->layout.point.x;
-		point->y += obj->father->layout.point.y;
-		lui_obj_coupoint(obj->father, point);
-	}
 }
 
 static lui_touch_val_t touch_val = {
@@ -206,16 +214,12 @@ void _lui_obj_even(lui_obj_t * obj, int x, int y, uint8_t flag) {
         return;
     } else {
     	if(obj->design != NULL) {
-    		lui_point_t point;
-			point.x = obj->layout.point.x;
-			point.y = obj->layout.point.y;
-			lui_obj_coupoint(obj,&point);
-			if( ( ( x >= point.x && x <= (point.x + obj->layout.size.width) )
-					&& ( y >= point.y && y <= (point.y + obj->layout.size.length) ) )
+			if( ( ( x >= obj->layout.point.x && x <= (obj->layout.point.x + obj->layout.size.width) )
+					&& ( y >= obj->layout.point.y && y <= (obj->layout.point.y + obj->layout.size.length) ) )
 					|| obj->event_flag == 1 ) {
 					touch_val.event = obj->event;
-					touch_val.abs_x = x - point.x;
-					touch_val.abs_y = y - point.y;
+					touch_val.abs_x = x - obj->layout.point.x;
+					touch_val.abs_y = y - obj->layout.point.y;
 					touch_val.rel_x = x;
 					touch_val.rel_y = y;
 					touch_val.falg  = flag;

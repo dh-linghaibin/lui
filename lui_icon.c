@@ -7,7 +7,7 @@
 
 #include "lui_icon.h"
 
-static void lui_icon_design (struct _lui_obj_t * obj, lui_point_t *point);
+static void lui_icon_design (struct _lui_obj_t * obj);
 
 lui_obj_t *lui_create_icon(int x, int y, int width, int length, const unsigned int * material) {
 	licon * icon = lui_malloc(sizeof(licon));
@@ -17,11 +17,11 @@ lui_obj_t *lui_create_icon(int x, int y, int width, int length, const unsigned i
 }
 
 
-static void lui_icon_design (struct _lui_obj_t * obj, lui_point_t *point) {
+static void lui_icon_design (struct _lui_obj_t * obj) {
 	licon * icon = obj->val;
 	for(int i = 0; i < LCD_LENGTH; i += obj->layout.size.length) {
 		for(int j = 0; j < LCD_WIDTH; j += obj->layout.size.width) {
-			lui_draw_icon(point->x+j,point->y+i,obj->layout.size.width,obj->layout.size.length,icon->material);
+			lui_draw_icon(obj->layout.point.x+j,obj->layout.point.y+i,obj->layout.size.width,obj->layout.size.length,icon->material);
 		}
 	}
 //	lui_draw_icon(point->x,point->y,obj->layout.size.width,obj->layout.size.length,icon->material);

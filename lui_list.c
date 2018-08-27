@@ -9,7 +9,7 @@
 #include "lui_color.h"
 #include "lui_draw.h"
 
-static void lui_list_design (struct _lui_obj_t * obj, lui_point_t *point);
+static void lui_list_design (struct _lui_obj_t * obj);
 static void lui_list_event(lui_touch_val_t *val);
 
 lui_obj_t * lui_create_list(int x,int y) {
@@ -50,10 +50,10 @@ void lui_list_setonclicklistener(lui_obj_t * obj, void (*on_click)(lui_obj_t * o
 	but->on_click = on_click;
 }
 
-static void lui_list_design (struct _lui_obj_t * obj, lui_point_t *point) {
+static void lui_list_design (struct _lui_obj_t * obj) {
 	lui_list * list = obj->val;
-	lui_draw_frame(point->x,
-				   point->y,
+	lui_draw_frame(obj->layout.point.x,
+			obj->layout.point.y,
 				   obj->layout.size.width,
 				   obj->layout.size.length,
 				   150,0xffff);
@@ -62,20 +62,23 @@ static void lui_list_design (struct _lui_obj_t * obj, lui_point_t *point) {
 static void lui_list_event(lui_touch_val_t *val) {
 	lui_list * list = val->obj->val;
 	if(val->falg == 2) {
-		list->move_val = val->abs_y;
+		if(val->obj->child != NULL) {
+			list->abs_val =val->obj->child->layout.point.y;
+		}
+		list->move_val = val->rel_y;
 	}
 	if(val->falg == 1) {
 		lui_obj_t * child;
 		child = val->obj->child;
 		uint32_t i = 0;
 		while(child != NULL) {
-			child->layout.point.y = (val->abs_y - list->move_val)+list->abs_val+i;
+			child->layout.point.y = (val->rel_y - list->move_val)+list->abs_val+i;
 			i+= child->layout.size.length + 5;
 			child = child->brother;
 		}
 	}
 	if(val->falg == 0) {
-		list->abs_val += val->abs_y - list->move_val;
+		list->abs_val += val->rel_y - list->move_val;
 		lui_obj_t * child;
 		child = val->obj->child;
 		uint32_t i = 0;

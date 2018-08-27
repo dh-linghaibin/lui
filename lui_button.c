@@ -9,7 +9,7 @@
 #include "lui_color.h"
 #include "lui_draw.h"
 
-static void lui_button_design (struct _lui_obj_t * obj, lui_point_t *point);
+static void lui_button_design (struct _lui_obj_t * obj);
 static void lui_button_event(lui_touch_val_t *val);
 
 lui_obj_t * lui_create_button(int x,int y) {
@@ -57,15 +57,15 @@ void lui_button_setonclicklistener_down(lui_obj_t * obj, void (*on_click_down)(l
 	but->on_click_down = on_click_down;
 }
 
-static void lui_button_design (struct _lui_obj_t * obj, lui_point_t *point) {
+static void lui_button_design (struct _lui_obj_t * obj) {
 	lui_button * but = obj->val;
-	lui_draw_frame(point->x,
-				   point->y,
+	lui_draw_frame(obj->layout.point.x,
+				   obj->layout.point.y,
 				   obj->layout.size.width,
 				   obj->layout.size.length,
 				   but->alpha,but->color);
-	int x = point->x + (obj->layout.size.width/2) - (but->tex_size*(but->bold*7)/2);
-	int y = point->y + (obj->layout.size.length/2) - but->bold*4;
+	int x = obj->layout.point.x + (obj->layout.size.width/2) - (but->tex_size*(but->bold*7)/2);
+	int y = obj->layout.point.y + (obj->layout.size.length/2) - but->bold*4;
 	lui_draw_text(x,y,but->tex_color,but->bold,but->tex);
 }
 

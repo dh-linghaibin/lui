@@ -9,7 +9,7 @@
 #include "material/fruit.h"
 
 //lui_obj_t * bar;
-//lui_obj_t * keyboard;
+lui_obj_t * keyboard;
 //lui_obj_t * text;
 //
 //void but_on_click(lui_obj_t * obj) {
@@ -36,7 +36,7 @@ void lui_init(void) {
 //		lui_obj_add_child(lui_get_root(),but[i]);
 //		lui_button_set_text(but[i],"B");
 //	}
-//
+
 //	bar = lui_create_bar(100,20);
 	//lui_obj_add_child(lui_get_root(),bar);
 	//lui_button_setonclicklistener(but[4],but_on_click);
@@ -45,7 +45,7 @@ void lui_init(void) {
 //	lui_obj_add_child(lui_get_root(),cheb);
 
 	lui_obj_t * list = lui_create_list(99,120);
-	lui_obj_add_child(lui_get_root(),list);
+	//lui_obj_add_child(lui_get_root(),list);
 	//lui_list_add_item(list,bar);
 	lui_obj_t * bar2 = lui_create_bar(100,20);
 	lui_list_add_item(list,bar2);
@@ -59,20 +59,20 @@ void lui_init(void) {
 	lui_list_add_item(list,lui_create_bar(100,20));
 //	lui_draw_png(0,0,24,24,emoji_pixel_map);
 
-//	lui_obj_t * list2 = lui_create_list(299,120);
-//	lui_obj_set_width(list2,300);
-//	lui_list_add_item(list2,list);
-//	lui_obj_add_child(lui_get_root(),list2);
-//
+	lui_obj_t * list2 = lui_create_list(299,120);
+	lui_obj_set_width(list2,300);
+	lui_list_add_item(list2,list);
+	lui_obj_add_child(lui_get_root(),list2);
+
 //	text = lui_create_text(300,10);
 //	lui_obj_add_child(lui_get_root(),text);
 //	char * name = lui_malloc(sizeof(char));
 //	name[0] = "T";
 //	lui_text_set_text(text,name);
-
+//
 //	keyboard = lui_create_keyboard(205,200);
 //	lui_obj_add_child(lui_get_root(),keyboard);
-//	lui_keyboard_setonclicklistener(keyboard,list_on_click);
+	//lui_keyboard_setonclicklistener(keyboard,list_on_click);
 
 //	lui_obj_distroy(&list->child->brother);
 }

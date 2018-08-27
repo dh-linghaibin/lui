@@ -9,7 +9,7 @@
 #include "lui_color.h"
 #include "lui_draw.h"
 
-static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point);
+static void lui_text_design (struct _lui_obj_t * obj);
 static void lui_text_event(lui_touch_val_t *val);
 
 lui_obj_t * lui_create_text(int x,int y) {
@@ -26,17 +26,17 @@ void lui_text_set_text(lui_obj_t * obj, char * tex) {
 	text->tex = tex;
 }
 
-static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
+static void lui_text_design (struct _lui_obj_t * obj) {
 	lui_text * text = obj->val;
 	//lui_draw_text(point->x,point->y,text->color,1,text->tex);
-	int ax = point->x;
-	int ay = point->y;
+	int ax = obj->layout.point.x;
+	int ay = obj->layout.point.y;
 	char * tex = text->tex;
 	while(*tex) {
-		if(ax > (point->x+obj->layout.size.width)) {
-			ax = point->x;
+		if(ax > (obj->layout.point.x+obj->layout.size.width)) {
+			ax = obj->layout.point.x;
 			ay += 16;
-			if(ay > (point->y+obj->layout.size.length)) {
+			if(ay > (obj->layout.point.x+obj->layout.size.length)) {
 				break;
 			}
 		}

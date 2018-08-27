@@ -50,7 +50,7 @@ typedef struct _lui_obj_t {
     struct _lui_obj_t *brother;
     struct _lui_obj_t *child;
     void * val;
-    void (*design) (struct _lui_obj_t * obj, lui_point_t *point);
+    void (*design) (struct _lui_obj_t * obj);
     void (*event) (lui_touch_val_t *val);
     uint8_t event_flag;
 } lui_obj_t;
@@ -58,7 +58,7 @@ typedef struct _lui_obj_t {
 
 lui_obj_t *lui_get_root(void);
 lui_obj_t *lui_create_obj( int x, int y, int width, int length, void * val,
-		void (*design) (struct _lui_obj_t * obj, lui_point_t *point) );
+		void (*design) (struct _lui_obj_t * obj) );
 
 void lui_obj_set_x(lui_obj_t * obj, int x);
 void lui_obj_set_y(lui_obj_t * obj, int y);

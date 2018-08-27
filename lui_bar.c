@@ -8,7 +8,7 @@
 #include "lui_bar.h"
 #include "lui_color.h"
 
-static void lui_bar_design (struct _lui_obj_t * obj, lui_point_t *point);
+static void lui_bar_design (struct _lui_obj_t * obj);
 static void lui_bar_event(lui_touch_val_t *val);
 
 lui_obj_t * lui_create_bar(int x, int y) {
@@ -26,7 +26,7 @@ void lui_bar_set_val(lui_obj_t * obj, uint8_t val) {
 	bar->val = val;
 }
 
-static void lui_bar_design (struct _lui_obj_t * obj, lui_point_t *point) {
+static void lui_bar_design (struct _lui_obj_t * obj) {
 	lui_bar * bar = obj->val;
 //	lui_draw_frame(point->x,
 //				   point->y,
@@ -38,13 +38,13 @@ static void lui_bar_design (struct _lui_obj_t * obj, lui_point_t *point) {
 //				   15,
 //				   obj->layout.size.length,
 //				   100,bar->t_color);
-	lui_draw_frame(point->x,
-				   point->y,
+	lui_draw_frame(obj->layout.point.x,
+				   obj->layout.point.y,
 				   obj->layout.size.width,
 				   obj->layout.size.length,
 				   200,bar->b_color);
-	lui_draw_frame(point->x,
-				   point->y,
+	lui_draw_frame(obj->layout.point.x,
+			       obj->layout.point.y,
 				   bar->val*(obj->layout.size.width*0.01),
 				   obj->layout.size.length,
 				   0,bar->t_color);

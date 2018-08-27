@@ -17,7 +17,7 @@ static const key_code mkey_code[30] = { {"Q"},{"W"},{"E"},{"R"},{"T"},{"Y"},{"U"
 										{"Z"},{"X"},{"C"},{"V"},{"B"},{"N"},{"M"},{"."},{" "},{" "},
 									  };
 
-static void lui_keyboard_design (struct _lui_obj_t * obj, lui_point_t *point);
+static void lui_keyboard_design (struct _lui_obj_t * obj);
 static void lui_keyboard_event(lui_touch_val_t *val);
 static void but_on_click(lui_obj_t * obj);
 static void but_on_click_down(lui_obj_t * obj);
@@ -46,7 +46,7 @@ void lui_keyboard_setonclicklistener(lui_obj_t * obj, void (*on_click)(lui_obj_t
 	but->on_click = on_click;
 }
 
-static void lui_keyboard_design (struct _lui_obj_t * obj, lui_point_t *point) {
+static void lui_keyboard_design (struct _lui_obj_t * obj) {
 //	lui_keyboard * list = obj->val;
 //	if(list->y != 0) {
 //		lui_draw_frame(list->x,
@@ -65,11 +65,6 @@ static void but_on_click_down(lui_obj_t * obj) {
 	lui_button * but = obj->val;
 	lui_keyboard * kb = obj->father->val;
 
-	lui_point_t point;
-	point.x = obj->layout.point.x;
-	point.y = obj->layout.point.y;
-	lui_obj_coupoint(obj,&point);
-
 	if(kb->tips == NULL) {
 		kb->tips = lui_create_button(-10,-10);
 		lui_obj_add_child(lui_get_root(),kb->tips);
@@ -77,8 +72,8 @@ static void but_on_click_down(lui_obj_t * obj) {
 		lui_button_set_color(kb->tips,lui_color565(blue));
 	}
 	lui_button_set_text(kb->tips,but->tex);
-	kb->tips->layout.point.y = point.y-40;
-	kb->tips->layout.point.x = point.x-4;
+	kb->tips->layout.point.x = obj->layout.point.x - 4;
+	kb->tips->layout.point.y = obj->layout.point.y - 40;
 }
 
 static void but_on_click(lui_obj_t * obj) {
