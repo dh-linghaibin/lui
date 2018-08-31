@@ -1,7 +1,7 @@
 /*
  * This file is part of the lui_obj.c
  *
- *  Copyright (c) : 2018年8月18日 linghaibin
+ *  Copyright (c) : 2018锟斤拷8锟斤拷18锟斤拷 linghaibin
  *      Author: a6735
  */
 
@@ -124,14 +124,14 @@ static void _lui_obj_distroy(lui_obj_t ** obj) {
     if((*obj) == NULL) {
         return ;
     } else {
-        pl = (*obj)->child;  //保存左孩子的地址
-        pr = (*obj)->brother;  //保存右孩子的地址
+        pl = (*obj)->child;  
+        pr = (*obj)->brother;
         (*obj)->child = NULL;
         (*obj)->brother = NULL;
         lui_free((*obj)->val);
-        lui_free(*obj);   //释放根节点
+        lui_free(*obj);
         (*obj) = NULL;
-        _lui_obj_distroy(&pl);   //递归销毁
+        _lui_obj_distroy(&pl);
         _lui_obj_distroy(&pr);
     }
 }
@@ -143,41 +143,134 @@ void lui_obj_distroy(lui_obj_t ** obj) {
 	}
 }
 
-static void lui_obj_get_father_layout(lui_obj_t * obj, lui_layout_t * layout) {
+extern lui_layout_t f_layout;
+static lui_obj_t * _f_layout_obj = NULL;
+
+void _lui_obj_father_size(lui_obj_t * obj) {
+//	lui_obj_t * f_obj = obj->father;
+//	while(f_obj != NULL) {
+//		printf("%d, %d, %d, %d \n",f_obj->layout.point.x,f_obj->layout.point.y,
+//				f_obj->layout.size.width,f_obj->layout.size.length);
+//		f_obj = f_obj->father;
+//	}
+	f_layout.point.x = 0;
+	f_layout.point.y = 0;
+	f_layout.size.width = LCD_WIDTH;
+	f_layout.size.length = LCD_LENGTH;
+}
+
+static void lui_obj_get_father_layout(lui_point_t * pos, lui_obj_t * obj, lui_layout_t * layout) {
+	lui_obj_t * f_obj = obj->father;
 	layout->point.x = 0;
 	layout->point.y = 0;
 	layout->size.width = LCD_WIDTH;
 	layout->size.length = LCD_LENGTH;
-	lui_obj_t * f_obj = obj->father;
+	if(f_obj == NULL) {
+		layout->point.x = 0;
+		layout->point.y = 0;
+		layout->size.width = LCD_WIDTH;
+		layout->size.length = LCD_LENGTH;
+	} else {
+		if(_f_layout_obj == f_obj) {
 
-	if(f_obj != NULL) {
-		layout->point.x = f_obj->layout.point.x;
-		layout->point.y = f_obj->layout.point.y;
-		layout->size.width = f_obj->layout.size.width;
-		layout->size.length = f_obj->layout.size.length;
+		} else {
+
+		}
 	}
 }
 
-extern lui_layout_t f_layout;
+lui_obj_t * last_stack = NULL;
+lui_point_t stack_point;
+
+int tree_layer = 0;
+int tree_layer2 = 0;
 
 void lui_obj_traverse(lui_obj_t * obj) {
     if (obj == NULL) {
+    	tree_layer --;
         return;
     } else {
-    	if(obj->design != NULL) {
-    		lui_point_t point;
-    		point.x = 0;
-    		point.y = 0;
-			lui_obj_coupoint(obj,&point);
-			point.x += obj->layout.point.x;
-			point.y += obj->layout.point.y;
+    	tree_layer++;
+//    	printf("%d \n",tree_layer);
+    	if(tree_layer2 > tree_layer) {
+    		int i = tree_layer2-tree_layer;
+    		while(i > 0) {
+    			i--;
+    			if(last_stack != NULL) {
+					stack_point.x -= last_stack->layout.point.x;
+					stack_point.y -= last_stack->layout.point.y;
 
-			lui_obj_get_father_layout(obj,&f_layout);
-
-			obj->design(obj,&point);
+					last_stack = last_stack->father;
+				}
+    		}
     	}
-        lui_obj_traverse(obj->child);
-        lui_obj_traverse(obj->brother);
+    	tree_layer2 = tree_layer;
+    	if(obj->child != NULL) {
+    		if(obj->father == NULL) {
+    			printf("start---");
+    			tree_layer = 0;
+    			stack_point.x = 0;
+    			stack_point.y = 0;
+    			f_layout.point.x = 0;
+    			f_layout.point.y = 0;
+    			f_layout.size.width = LCD_WIDTH;
+    			f_layout.size.length = LCD_LENGTH;
+    		} else {
+    			last_stack = obj;
+
+				int w1 = stack_point.x + f_layout.size.width;
+				int h1 = stack_point.y + f_layout.size.length;
+
+    			stack_point.x += last_stack->layout.point.x;
+				stack_point.y += last_stack->layout.point.y;
+
+				int w2 = stack_point.x + last_stack->layout.size.width;
+				int h2 = stack_point.y + last_stack->layout.size.length;
+
+				if(h2 < h1) {
+					f_layout.size.length = last_stack->layout.size.length;
+					if(f_layout.point.y > stack_point.y) {
+						f_layout.size.length -= f_layout.point.y - stack_point.y;
+						// printf("%d %d---",f_layout.point.y , stack_point.y);
+					}
+				} else if(h2 > h1) {
+					if((h2 - h1) > f_layout.size.length) {
+						f_layout.size.length = 0;
+						tree_layer --;
+						return ;
+					} else {
+						f_layout.size.length -= (h2 - h1);
+					}
+				}
+
+				if(f_layout.point.x < stack_point.x) {
+					f_layout.point.x = stack_point.x;
+				}
+
+				if(f_layout.point.y < stack_point.y) {
+					f_layout.point.y = stack_point.y;
+				}
+
+				printf("^ %d %d---%d^", h1,h2,f_layout.point.x+f_layout.size.length);
+    		}
+			printf("father-\n");
+		}
+//		printf("-- %d, %d, %d, %d \n",obj->layout.point.x,obj->layout.point.y,
+//				obj->layout.size.width,obj->layout.size.length);
+
+		if(obj->design != NULL) {
+			lui_point_t point;
+			if(last_stack == obj) {
+				point.x = stack_point.x;
+				point.y = stack_point.y;
+			} else {
+				point.x = stack_point.x + obj->layout.point.x;
+				point.y = stack_point.y + obj->layout.point.y;
+			}
+			obj->design(obj,&point);
+		}
+		lui_obj_traverse(obj->child);
+    	lui_obj_traverse(obj->brother);
     }
 }
 

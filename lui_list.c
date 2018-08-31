@@ -35,7 +35,7 @@ void lui_list_set_size(lui_obj_t * list, int width, int length) {
 void lui_list_add_item(lui_obj_t * list, lui_obj_t * item) {
 	lui_obj_t * child;
 	child = list->child;
-	uint32_t i = 0;
+	uint32_t i = -20;
 	while(child != NULL) {
 		i+=child->layout.size.length + 5;
 		child = child->brother;
@@ -57,6 +57,7 @@ static void lui_list_design (struct _lui_obj_t * obj, lui_point_t *point) {
 				   obj->layout.size.width,
 				   obj->layout.size.length,
 				   150,0xffff);
+	lui_draw_iconxx(0,0,8,8);
 }
 
 static void lui_list_event(lui_touch_val_t *val) {

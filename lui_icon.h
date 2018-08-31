@@ -24,6 +24,8 @@ typedef struct _licon {
     const unsigned int * material;
 } licon;
 
+lui_obj_t *lui_create_icon(int x, int y, int width, int length, const unsigned int * material);
+
 #ifdef __cplusplus
 }
 #endif
