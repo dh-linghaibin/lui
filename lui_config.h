@@ -14,8 +14,8 @@ extern "C" {
 
 #include "sram.h"
 
-#define LCD_LENGTH 480
-#define LCD_WIDTH  800
+#define LCD_LENGTH 280
+#define LCD_WIDTH  280
 
 #define CACHE_LENGTH LCD_LENGTH
 #define CACHE_WIDTH  LCD_WIDTH

@@ -6,7 +6,8 @@
         "lui.h": "c",
         "lui_color.h": "c",
         "lui_draw.h": "c",
-        "lui_list.h": "c"
+        "lui_list.h": "c",
+        "lui_font_mate.h": "c"
     },
     "python.jediEnabled": false
 }

@@ -58,11 +58,10 @@ void lui_list_setonclicklistener(lui_obj_t * obj, void (*on_click)(lui_obj_t * o
 static void lui_list_design (struct _lui_obj_t * obj, lui_point_t *point) {
     lui_list * list = obj->val;
     lui_draw_frame(point->x,
-                   point->y,
-                   obj->layout.size.width,
-                   obj->layout.size.length,
-                   150,0xffff);
-    lui_draw_iconxx(0,0,8,8);
+                    point->y,
+                    obj->layout.size.width,
+                    obj->layout.size.length,
+                    150,0xffff);
 }
 
 static void lui_list_event(lui_touch_val_t *val) {

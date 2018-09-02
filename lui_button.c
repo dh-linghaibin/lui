@@ -1,7 +1,7 @@
 /*
  * This file is part of the lui_button.c
  *
- *  Copyright (c) : 2018��8��19�� linghaibin
+ *  Copyright (c) : 2018  linghaibin
  *      Author: a6735
  */
 
@@ -14,10 +14,10 @@ static void lui_button_event(lui_touch_val_t *val);
 
 lui_obj_t * lui_create_button(int x,int y) {
     lui_button * but = lui_malloc(sizeof(lui_button));
-    but->tex = "";
-    but->tex_size = 0;
+    but->tex = "Enter";
+    but->tex_size = 5;
     but->color = lui_color565(white);
-    but->tex_color = lui_color565(0x00);
+    but->tex_color = lui_color565(red);
     but->alpha = 0;
     but->bold = 1;
     but->on_click = NULL;
@@ -60,12 +60,12 @@ void lui_button_setonclicklistener_down(lui_obj_t * obj, void (*on_click_down)(l
 static void lui_button_design (struct _lui_obj_t * obj, lui_point_t *point) {
     lui_button * but = obj->val;
     lui_draw_frame(point->x,
-                   point->y,
-                   obj->layout.size.width,
-                   obj->layout.size.length,
-                   but->alpha,but->color);
-    int x = point->x + (obj->layout.size.width/2) - (but->tex_size*(but->bold*7)/2);
-    int y = point->y + (obj->layout.size.length/2) - but->bold*4;
+                    point->y,
+                    obj->layout.size.width,
+                    obj->layout.size.length,
+                    but->alpha,but->color);
+    int x = point->x + (obj->layout.size.width/2) - (but->tex_size*(but->bold*4.5)/2);
+    int y = point->y + (obj->layout.size.length/2) - but->bold*3.5;
     lui_draw_text(x,y,but->tex_color,but->bold,but->tex);
 }
 

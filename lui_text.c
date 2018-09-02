@@ -1,7 +1,7 @@
 /*
  * This file is part of the lui_text.c
  *
- *  Copyright (c) : 2018��8��19�� linghaibin
+ *  Copyright (c) : 2018 linghaibin
  *      Author: a6735
  */
 
@@ -28,7 +28,6 @@ void lui_text_set_text(lui_obj_t * obj, char * tex) {
 
 static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
     lui_text * text = obj->val;
-    //lui_draw_text(point->x,point->y,text->color,1,text->tex);
     int ax = point->x;
     int ay = point->y;
     char * tex = text->tex;
@@ -40,7 +39,7 @@ static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
                 break;
             }
         }
-        lui_draw_char(ax,ay,*tex++,text->color,2,2);
+        // lui_draw_char(ax,ay,*tex++,text->color,2,2);
         ax += 14;
     }
 }

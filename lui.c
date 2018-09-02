@@ -40,7 +40,7 @@ void lui_init(void) {
     lui_obj_set_width(list2,120);
     lui_list_add_item(list2,list);
 
-    lui_obj_t * list3 = lui_create_list(0,0);
+    lui_obj_t * list3 = lui_create_list(100,0);
     lui_obj_set_length(list3,240);
     lui_obj_set_width(list3,140);
     lui_list_add_item(list3,list2);
@@ -52,8 +52,8 @@ void lui_init(void) {
 //    name[0] = "T";
 //    lui_text_set_text(text,name);
 
-//    lui_obj_t * keyboard = lui_create_keyboard(300,220);
-//    lui_obj_add_child(lui_get_root(),keyboard);
+    lui_obj_t * keyboard = lui_create_keyboard(10,10);
+    lui_obj_add_child(lui_get_root(),keyboard);
 }
 
 void lui_loop(void) {
