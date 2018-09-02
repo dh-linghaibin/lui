@@ -16,14 +16,14 @@ extern "C" {
 
 
 typedef struct _lui_button {
-	char * tex;
-	uint8_t tex_size;
-	uint16_t tex_color;
-	uint16_t color;
-	uint8_t alpha;
-	uint8_t bold;
-	void (*on_click)(lui_obj_t * obj);
-	void (*on_click_down)(lui_obj_t * obj);
+    char * tex;
+    uint8_t tex_size;
+    uint16_t tex_color;
+    uint16_t color;
+    uint8_t alpha;
+    uint8_t bold;
+    void (*on_click)(lui_obj_t * obj);
+    void (*on_click_down)(lui_obj_t * obj);
 } lui_button;
 
 lui_obj_t * lui_create_button(int x,int y);

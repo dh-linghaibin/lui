@@ -3,6 +3,10 @@
         "stdio.h": "c",
         "sdl.h": "c",
         "lui_icon.h": "c",
-        "lui.h": "c"
-    }
+        "lui.h": "c",
+        "lui_color.h": "c",
+        "lui_draw.h": "c",
+        "lui_list.h": "c"
+    },
+    "python.jediEnabled": false
 }

@@ -30,22 +30,22 @@ typedef struct _lui_size_t {
 } lui_size_t;
 
 typedef struct _lui_layout_t {
-	lui_point_t point;
-	lui_size_t  size;
+    lui_point_t point;
+    lui_size_t  size;
 } lui_layout_t;
 
 typedef struct _lui_touch_val_t {
-	struct _lui_obj_t *obj;
-	int abs_x;
-	int abs_y;
-	int rel_x;
-	int rel_y;
-	uint8_t falg;
-	void (*event) (struct _lui_touch_val_t *val);
+    struct _lui_obj_t *obj;
+    int abs_x;
+    int abs_y;
+    int rel_x;
+    int rel_y;
+    uint8_t falg;
+    void (*event) (struct _lui_touch_val_t *val);
 } lui_touch_val_t;
 
 typedef struct _lui_obj_t {
-	lui_layout_t      layout;
+    lui_layout_t      layout;
     struct _lui_obj_t *father;
     struct _lui_obj_t *brother;
     struct _lui_obj_t *child;
@@ -58,7 +58,7 @@ typedef struct _lui_obj_t {
 
 lui_obj_t *lui_get_root(void);
 lui_obj_t *lui_create_obj( int x, int y, int width, int length, void * val,
-		void (*design) (struct _lui_obj_t * obj, lui_point_t *point) );
+        void (*design) (struct _lui_obj_t * obj, lui_point_t *point) );
 
 void lui_obj_set_x(lui_obj_t * obj, int x);
 void lui_obj_set_y(lui_obj_t * obj, int y);

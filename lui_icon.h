@@ -15,12 +15,12 @@ extern "C" {
 #include "lui_obj.h"
 
 typedef enum {
-	LIT_BMP,
-	LIT_PNG,
+    LIT_BMP,
+    LIT_PNG,
 } lui_icon_type;
 
 typedef struct _licon {
-	lui_icon_type type;
+    lui_icon_type type;
     const unsigned int * material;
 } licon;
 

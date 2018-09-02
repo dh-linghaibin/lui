@@ -1,7 +1,7 @@
 /*
  * This file is part of the lui_draw.c
  *
- *  Copyright (c) : 2018Äê8ÔÂ17ÈÕ linghaibin
+ *  Copyright (c) : 2018 linghaibin
  *      Author: a6735
  */
 
@@ -13,10 +13,10 @@ typedef struct _lcache {
     lui_layout_t coordinate;
 } lui_cache;
 
-static lui_cache cache; /* »º´æ */
+static lui_cache cache; 
 
 void lui_draw_char(uint16_t x, int16_t y, unsigned char c,
-              uint16_t color, uint8_t sx, uint8_t sy);
+                    uint16_t color, uint8_t sx, uint8_t sy);
 
 static void l_point(int s_x, int s_y ,int m_x, int m_y, uint16_t color) {
     if( ( s_x  >= cache.coordinate.point.x && s_x  < m_x ) &&
@@ -30,42 +30,42 @@ static void l_point(int s_x, int s_y ,int m_x, int m_y, uint16_t color) {
 lui_layout_t f_layout;
 
 static uint8_t lui_draw_check_layout(int x, int y, int width, int length) {
-	int maxX1 = x + width;
-	int maxY1 = y + length;
-	int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
-	int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
+    int maxX1 = x + width;
+    int maxY1 = y + length;
+    int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
+    int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
 
-	int l_x = f_layout.point.x + f_layout.size.width;
-	int l_y = f_layout.point.y + f_layout.size.length;
+    int l_x = f_layout.point.x + f_layout.size.width;
+    int l_y = f_layout.point.y + f_layout.size.length;
 
-	if (!(maxX1 < f_layout.point.x || x > l_x
-	    		|| maxY1 < f_layout.point.y || y > l_y )) {
+    if (!(maxX1 < f_layout.point.x || x > l_x
+                || maxY1 < f_layout.point.y || y > l_y )) {
 
-			if (!(maxX1 < cache.coordinate.point.x || x > maxX2
-					|| maxY1 < cache.coordinate.point.y || y > maxY2)) {
-				int x1 = 0; int y1 = 0;
-				int x2 = cache.coordinate.size.width;
-				int y2 = cache.coordinate.size.length;
+            if (!(maxX1 < cache.coordinate.point.x || x > maxX2
+                    || maxY1 < cache.coordinate.point.y || y > maxY2)) {
+                int x1 = 0; int y1 = 0;
+                int x2 = cache.coordinate.size.width;
+                int y2 = cache.coordinate.size.length;
 
-				if(f_layout.point.x > x) {
-					x = f_layout.point.x;
-				}
+                if(f_layout.point.x > x) {
+                    x = f_layout.point.x;
+                }
 
-				if(f_layout.point.y > y) {
-					y = f_layout.point.y;
-				}
+                if(f_layout.point.y > y) {
+                    y = f_layout.point.y;
+                }
 
-				if(maxX1 > l_x) {
-					maxX1 = l_x;
-				}
+                if(maxX1 > l_x) {
+                    maxX1 = l_x;
+                }
 
-				if(maxY1 > l_y) {
-					maxY1 = l_y;
-				}
-				return 1;
-			}
-	}
-	return 0;
+                if(maxY1 > l_y) {
+                    maxY1 = l_y;
+                }
+                return 1;
+            }
+    }
+    return 0;
 }
 
 void lui_draw_frame(int x, int y, int width, int length, int alpha, uint16_t color) {
@@ -78,52 +78,52 @@ void lui_draw_frame(int x, int y, int width, int length, int alpha, uint16_t col
     int l_y = f_layout.point.y + f_layout.size.length;
 
     if (!(maxX1 < f_layout.point.x || x > l_x
-    		|| maxY1 < f_layout.point.y || y > l_y )) {
+            || maxY1 < f_layout.point.y || y > l_y )) {
 
-		if (!(maxX1 < cache.coordinate.point.x || x > maxX2
-				|| maxY1 < cache.coordinate.point.y || y > maxY2)) {
-			int x1 = 0; int y1 = 0;
-			int x2 = cache.coordinate.size.width;
-			int y2 = cache.coordinate.size.length;
+        if (!(maxX1 < cache.coordinate.point.x || x > maxX2
+                || maxY1 < cache.coordinate.point.y || y > maxY2)) {
+            int x1 = 0; int y1 = 0;
+            int x2 = cache.coordinate.size.width;
+            int y2 = cache.coordinate.size.length;
 
-			if(f_layout.point.x > x) {
-				x = f_layout.point.x;
-			}
+            if(f_layout.point.x > x) {
+                x = f_layout.point.x;
+            }
 
-			if(f_layout.point.y > y) {
-				y = f_layout.point.y;
-			}
+            if(f_layout.point.y > y) {
+                y = f_layout.point.y;
+            }
 
-			if(maxX1 > l_x) {
-				maxX1 = l_x;
-			}
+            if(maxX1 > l_x) {
+                maxX1 = l_x;
+            }
 
-			if(maxY1 > l_y) {
-				maxY1 = l_y;
-			}
+            if(maxY1 > l_y) {
+                maxY1 = l_y;
+            }
 
-			if(x >= cache.coordinate.point.x) {
-				x1 = x-cache.coordinate.point.x;
-			}
-			if(maxX1 < maxX2) {
-				x2 = cache.coordinate.size.width-(maxX2-maxX1);
-			}
-			if(y >= cache.coordinate.point.y) {
-				y1 = y-cache.coordinate.point.y;
-			}
-			if(maxY1 < maxY2) {
-				y2 = cache.coordinate.size.length-(maxY2-maxY1);
-			}
-			for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
-				for(int x_j = x1; x_j < x2; x_j++) {
-					if(alpha == 0) {
-						cache.array[y_i+x_j] = color;
-					} else {
-						cache.array[y_i+x_j] = lui_alpha_blend(cache.array[y_i+x_j],color,alpha);
-					}
-				}
-			}
-		}
+            if(x >= cache.coordinate.point.x) {
+                x1 = x-cache.coordinate.point.x;
+            }
+            if(maxX1 < maxX2) {
+                x2 = cache.coordinate.size.width-(maxX2-maxX1);
+            }
+            if(y >= cache.coordinate.point.y) {
+                y1 = y-cache.coordinate.point.y;
+            }
+            if(maxY1 < maxY2) {
+                y2 = cache.coordinate.size.length-(maxY2-maxY1);
+            }
+            for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
+                for(int x_j = x1; x_j < x2; x_j++) {
+                    if(alpha == 0) {
+                        cache.array[y_i+x_j] = color;
+                    } else {
+                        cache.array[y_i+x_j] = lui_alpha_blend(cache.array[y_i+x_j],color,alpha);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -132,8 +132,8 @@ void lui_draw_line(int s_x, int s_y, int e_x, int e_y, uint16_t color) {
     int maxy2 = cache.coordinate.point.y + cache.coordinate.size.length;
     if (!((s_x + e_x) < cache.coordinate.point.x || s_x > maxx2 || (s_y + e_y) < cache.coordinate.point.y || s_y > maxy2)) {
         int dx,dy,dx2,dy2,x_inc,y_inc,error,index;
-        dx = e_x-s_x;//¼ÆËãx¾àÀë
-        dy = e_y-s_y;//¼ÆËãy¾àÀë
+        dx = e_x-s_x;//ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½
+        dy = e_y-s_y;//ï¿½ï¿½ï¿½ï¿½yï¿½ï¿½ï¿½ï¿½
         if (dx>=0) {
             x_inc = 1;
         } else {
@@ -175,10 +175,10 @@ void lui_draw_line(int s_x, int s_y, int e_x, int e_y, uint16_t color) {
 }
 
 void lui_draw_empty_frame( int x1, int y1, int x2, int y2, uint16_t color ) {
-   lui_draw_line(x1,y1,x2,y1,color);
-   lui_draw_line(x1,y2,x2,y2,color);
-   lui_draw_line(x1,y1,x1,y2,color);
-   lui_draw_line(x2,y1,x2,y2,color);
+    lui_draw_line(x1,y1,x2,y1,color);
+    lui_draw_line(x1,y2,x2,y2,color);
+    lui_draw_line(x1,y1,x1,y2,color);
+    lui_draw_line(x2,y1,x2,y2,color);
 }
 
 void lui_draw_arc( int x0, int y0, int r, int s, uint16_t color ) {
@@ -421,69 +421,98 @@ void lui_draw_icon(int x, int y, int width, int length, const unsigned int * mat
 }
 
 uint8_t acGUI_FontConsolas15_0022[ 341] = {
-	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-	0xF0, 0x00, 0x00, 0x17, 0xEF, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x07, 0xEF, 0xFF, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x06, 0xEF, 0xFF, 0xFF, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF5, 0xDF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xFF, 0xFF, 0xFF, 0xFA, 0x2F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xFF, 0xFF, 0xFB, 0x30, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xFD, 0xFC, 0x40, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF6, 0x60, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
-	0xFA, 0xBB, 0xBB, 0xBB, 0xBF, 0xFF, 0xFD, 0xBB, 0xBB, 0xBB, 0xF0,
-	0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0,
-	0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0,
-	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+    0xF0, 0x00, 0x00, 0x17, 0xEF, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x07, 0xEF, 0xFF, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x06, 0xEF, 0xFF, 0xFF, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF5, 0xDF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xFF, 0xFF, 0xFF, 0xFA, 0x2F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xFF, 0xFF, 0xFB, 0x30, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xFD, 0xFC, 0x40, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF6, 0x60, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xF0, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xF7, 0x00, 0x00, 0x00, 0xF0,
+    0xFA, 0xBB, 0xBB, 0xBB, 0xBF, 0xFF, 0xFD, 0xBB, 0xBB, 0xBB, 0xF0,
+    0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0,
+    0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0,
+    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 };
 
 uint8_t acGUI_FontInkFree26_0041[ 64] = { /* code 0031, DIGIT ONE */
-	  0xFF, 0xFF, 0xFF, 0xFF,
-	  0xF0, 0x00, 0xB9, 0xF0,
-	  0xF0, 0x0A, 0xE9, 0xF0,
-	  0xF1, 0xBA, 0x7B, 0xF0,
-	  0xFD, 0x70, 0x6B, 0xF0,
-	  0xF3, 0x00, 0x5C, 0xF0,
-	  0xF0, 0x00, 0x4D, 0xF0,
-	  0xF0, 0x00, 0x3F, 0xF0,
-	  0xF0, 0x00, 0x2F, 0xF0,
-	  0xF0, 0x00, 0x1F, 0xF0,
-	  0xF0, 0x00, 0x0F, 0xF0,
-	  0xF0, 0x00, 0x0D, 0xF0,
-	  0xF0, 0x00, 0x0B, 0xF0,
-	  0xF0, 0x00, 0x09, 0xF0,
-	  0xF0, 0x00, 0x06, 0xF0,
-	  0xFF, 0xFF, 0xFF, 0xFF
+      0xFF, 0xFF, 0xFF, 0xFF,
+      0xF0, 0x00, 0xB9, 0xF0,
+      0xF0, 0x0A, 0xE9, 0xF0,
+      0xF1, 0xBA, 0x7B, 0xF0,
+      0xFD, 0x70, 0x6B, 0xF0,
+      0xF3, 0x00, 0x5C, 0xF0,
+      0xF0, 0x00, 0x4D, 0xF0,
+      0xF0, 0x00, 0x3F, 0xF0,
+      0xF0, 0x00, 0x2F, 0xF0,
+      0xF0, 0x00, 0x1F, 0xF0,
+      0xF0, 0x00, 0x0F, 0xF0,
+      0xF0, 0x00, 0x0D, 0xF0,
+      0xF0, 0x00, 0x0B, 0xF0,
+      0xF0, 0x00, 0x09, 0xF0,
+      0xF0, 0x00, 0x06, 0xF0,
+      0xFF, 0xFF, 0xFF, 0xFF
+};
+
+uint16_t one_test[] = {
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xc638, 0xc618, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xe73c, 0x8430, 0x2124, 0x0, 0x630c, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0x528a, 0x0, 0x0, 0x841, 0x0, 0x9cd3, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0x52aa, 0x6b4d, 0xce59, 0x632c, 0x0, 0xce79, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0x2965, 0x841, 0xffdf, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xf7be, 0x0, 0x39e7, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xbdf7, 0x0, 0x73ae, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0x8c51, 0x0, 0xad55, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0x528a, 0x0, 0xe71c, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0x18c3, 0x18c3, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xe71c, 0x0, 0x528a, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0x528a, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2124, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0x2124, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x52aa, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
 };
 
 void lui_draw_iconxx(int x, int y, int width, int length) {
-	int df = 50 + 20*800;
-	for(int j = 0; j < 16;j++) {
-		for(int i = 0; i < 4;i++) {
-//			cache.array[df+(i*2)] = lui_alpha_blend(cache.array[df+(i*2)],0x0000,0xf-(( (acGUI_FontConsolas15_0022[j*11+i] >>8) | 0x0f)*0x0f));
-//			cache.array[df+(i*2)+1] = lui_alpha_blend(cache.array[df+(i*2)],0x0000,0x100-((acGUI_FontConsolas15_0022[j*11+i] | 0x0f )*0x0f));;
-			cache.array[df+(i*2)] = lui_alpha_blend(cache.array[df+(i*2)],0xffff,acGUI_FontInkFree26_0041[j*4+i]);
-			cache.array[df+(i*2)+1] = lui_alpha_blend(cache.array[df+(i*2)],0xffff,acGUI_FontInkFree26_0041[j*4+i] );
-		}
-		df = j*800+50+ 20*800;
-	}
+//     int df = 50 + 20*800;
+//     for(int j = 0; j < 16;j++) {
+//         for(int i = 0; i < 4;i++) {
+// //            cache.array[df+(i*2)] = lui_alpha_blend(cache.array[df+(i*2)],0x0000,0xf-(( (acGUI_FontConsolas15_0022[j*11+i] >>8) | 0x0f)*0x0f));
+// //            cache.array[df+(i*2)+1] = lui_alpha_blend(cache.array[df+(i*2)],0x0000,0x100-((acGUI_FontConsolas15_0022[j*11+i] | 0x0f )*0x0f));;
+//             cache.array[df+(i*2)] = lui_alpha_blend(cache.array[df+(i*2)],0xffff,acGUI_FontInkFree26_0041[j*4+i]);
+//             cache.array[df+(i*2)+1] = lui_alpha_blend(cache.array[df+(i*2)],0xffff,acGUI_FontInkFree26_0041[j*4+i] );
+//         }
+//         df = j*800+50+ 20*800;
+//     }
+
+    int df = 50 + 16*800;
+    for(int j = 0; j < 16;j++) {
+        for(int i = 0; i < 16;i++) {
+            if(one_test[j*16+i] != 0xffff) {
+                cache.array[df+i] = one_test[j*16+i];
+            }
+        }
+        df = j*800+50+ 16*800;
+    }
 }
 
 
@@ -494,110 +523,110 @@ void lui_draw_png(int x, int y, int width, int length, const uint8_t * material)
     int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
 
     int l_x = f_layout.point.x + f_layout.size.width;
-	int l_y = f_layout.point.y + f_layout.size.length;
+    int l_y = f_layout.point.y + f_layout.size.length;
 
     if (!(maxX1 < f_layout.point.x || x > l_x
-    	    		|| maxY1 < f_layout.point.y || y > l_y )) {
-		if (!(maxX1 < cache.coordinate.point.x || x > maxX2 || maxY1 < cache.coordinate.point.y || y > maxY2)) {
-			int x1 = 0; int y1 = 0; int x2 = cache.coordinate.size.width; int y2 = cache.coordinate.size.length;
+                    || maxY1 < f_layout.point.y || y > l_y )) {
+        if (!(maxX1 < cache.coordinate.point.x || x > maxX2 || maxY1 < cache.coordinate.point.y || y > maxY2)) {
+            int x1 = 0; int y1 = 0; int x2 = cache.coordinate.size.width; int y2 = cache.coordinate.size.length;
 
-			uint8_t bbb = 0;
-			uint16_t ptr = 0;
-			if(f_layout.point.x > x) {
-				ptr += (f_layout.point.x-x);
-				bbb = ptr;
-				x = f_layout.point.x;
-			}
+            uint8_t bbb = 0;
+            uint16_t ptr = 0;
+            if(f_layout.point.x > x) {
+                ptr += (f_layout.point.x-x);
+                bbb = ptr;
+                x = f_layout.point.x;
+            }
 
-			if(f_layout.point.y > y) {
-				ptr += (f_layout.point.y-y)*width;
-				y = f_layout.point.y;
-			}
+            if(f_layout.point.y > y) {
+                ptr += (f_layout.point.y-y)*width;
+                y = f_layout.point.y;
+            }
 
-			uint8_t aaa = 0;
-			if(maxX1 > l_x) {
-				aaa = maxX1-l_x;
-				maxX1 = l_x;
-			}
+            uint8_t aaa = 0;
+            if(maxX1 > l_x) {
+                aaa = maxX1-l_x;
+                maxX1 = l_x;
+            }
 
-			if(maxY1 > l_y) {
-				maxY1 = l_y;
-			}
+            if(maxY1 > l_y) {
+                maxY1 = l_y;
+            }
 
-			if(x >= cache.coordinate.point.x) {
-				x1 = x-cache.coordinate.point.x;
-			}
-			if(maxX1 < maxX2) {
-				x2 = cache.coordinate.size.width-(maxX2-maxX1);
-			}
-			if(y >= cache.coordinate.point.y) {
-				y1 = y-cache.coordinate.point.y;
-			}
-			if(maxY1 < maxY2) {
-				y2 = cache.coordinate.size.length-(maxY2-maxY1);
-			}
+            if(x >= cache.coordinate.point.x) {
+                x1 = x-cache.coordinate.point.x;
+            }
+            if(maxX1 < maxX2) {
+                x2 = cache.coordinate.size.width-(maxX2-maxX1);
+            }
+            if(y >= cache.coordinate.point.y) {
+                y1 = y-cache.coordinate.point.y;
+            }
+            if(maxY1 < maxY2) {
+                y2 = cache.coordinate.size.length-(maxY2-maxY1);
+            }
 
 
-			if(y < cache.coordinate.point.y) {
-				ptr += (cache.coordinate.point.y-y)*width;
-			}
-			if(x < cache.coordinate.point.x) {
-				ptr += (cache.coordinate.point.x-x);
-			}
-			ptr *= 3;
-			for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
-				for(int x_j = x1; x_j < x2; x_j++) {
-					uint16_t color = (uint16_t)( material[ptr+1]<<8)+material[ptr];
-					cache.array[y_i+x_j] = lui_alpha_blend(cache.array[y_i+x_j],color, 0xff-material[ptr+2]);//material[ptr];;//alpha_blend(box.color,cache.array[val],95);
-					ptr += 3;
-				}
-				ptr += bbb*3;
-				if((x+width) > maxX2) {
-					ptr += ( (x+width) - maxX2) * 3;
-				}
-				if(x < cache.coordinate.point.x) {
-					ptr += (cache.coordinate.point.x-x) * 3;
-				}
-				if(aaa > 0) {
-					ptr += aaa*3;
-				}
-			}
-		}
+            if(y < cache.coordinate.point.y) {
+                ptr += (cache.coordinate.point.y-y)*width;
+            }
+            if(x < cache.coordinate.point.x) {
+                ptr += (cache.coordinate.point.x-x);
+            }
+            ptr *= 3;
+            for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
+                for(int x_j = x1; x_j < x2; x_j++) {
+                    uint16_t color = (uint16_t)( material[ptr+1]<<8)+material[ptr];
+                    cache.array[y_i+x_j] = lui_alpha_blend(cache.array[y_i+x_j],color, 0xff-material[ptr+2]);//material[ptr];;//alpha_blend(box.color,cache.array[val],95);
+                    ptr += 3;
+                }
+                ptr += bbb*3;
+                if((x+width) > maxX2) {
+                    ptr += ( (x+width) - maxX2) * 3;
+                }
+                if(x < cache.coordinate.point.x) {
+                    ptr += (cache.coordinate.point.x-x) * 3;
+                }
+                if(aaa > 0) {
+                    ptr += aaa*3;
+                }
+            }
+        }
     }
 }
 
 void LCD_ShowChar(uint16_t x,uint16_t y,uint8_t num,uint8_t size,uint8_t mode)
 {
-	uint8_t temp,t1,t;
+    uint8_t temp,t1,t;
     uint16_t y0=y;
-    uint8_t csize=(size/8+((size%8)?1:0))*(size/2);		//µÃµ½×ÖÌåÒ»¸ö×Ö·û¶ÔÓ¦µãÕó¼¯ËùÕ¼µÄ×Ö½ÚÊý
- 	num=num-' ';//µÃµ½Æ«ÒÆºóµÄÖµ£¨ASCII×Ö¿âÊÇ´Ó¿Õ¸ñ¿ªÊ¼È¡Ä££¬ËùÒÔ-' '¾ÍÊÇ¶ÔÓ¦×Ö·ûµÄ×Ö¿â£©
+    uint8_t csize=(size/8+((size%8)?1:0))*(size/2);        //ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½
+     num=num-' ';//ï¿½Ãµï¿½Æ«ï¿½Æºï¿½ï¿½Öµï¿½ï¿½ASCIIï¿½Ö¿ï¿½ï¿½Ç´Ó¿Õ¸ï¿½Ê¼È¡Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-' 'ï¿½ï¿½ï¿½Ç¶ï¿½Ó¦ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ö¿â£©
 
- 	 int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
-	int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
+      int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
+    int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
 
-	for(t=0;t<csize;t++)
-	{
-		if(size==12)temp=asc2_1206[num][t]; 	 	//µ÷ÓÃ1206×ÖÌå
-		else if(size==16)temp=asc2_1608[num][t];	//µ÷ÓÃ1608×ÖÌå
-		else if(size==24)temp=asc2_2412[num][t];	//µ÷ÓÃ2412×ÖÌå
-		else return;								//Ã»ÓÐµÄ×Ö¿â
-		for(t1=0;t1<8;t1++)
-		{
-			if(temp&0x80)l_point(x,y,maxX2,maxY2,0X3030);
-			else if(mode==0)l_point(x,y,maxX2,maxY2,0XFFFF);
-			temp<<=1;
-			y++;
-			if(y>=240)return;//³¬ÇøÓòÁË
-			if((y-y0)==size)
-			{
-				y=y0;
-				x++;
-				if(x>=320)return;//³¬ÇøÓòÁË
-				break;
-			}
-		}
-	}
+    for(t=0;t<csize;t++)
+    {
+        if(size==12)temp=asc2_1206[num][t];          //ï¿½ï¿½ï¿½ï¿½1206ï¿½ï¿½ï¿½ï¿½
+        else if(size==16)temp=asc2_1608[num][t];    //ï¿½ï¿½ï¿½ï¿½1608ï¿½ï¿½ï¿½ï¿½
+        else if(size==24)temp=asc2_2412[num][t];    //ï¿½ï¿½ï¿½ï¿½2412ï¿½ï¿½ï¿½ï¿½
+        else return;                                //Ã»ï¿½Ðµï¿½ï¿½Ö¿ï¿½
+        for(t1=0;t1<8;t1++)
+        {
+            if(temp&0x80)l_point(x,y,maxX2,maxY2,0X3030);
+            else if(mode==0)l_point(x,y,maxX2,maxY2,0XFFFF);
+            temp<<=1;
+            y++;
+            if(y>=240)return;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            if((y-y0)==size)
+            {
+                y=y0;
+                x++;
+                if(x>=320)return;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                break;
+            }
+        }
+    }
 }
 
 
@@ -622,14 +651,14 @@ void lui_draw_font_gbk16(uint16_t x, uint16_t y, uint16_t fc, char *s) {
                 }
                 x+=8;
 //                for(i=0;i<22;i++) {
-//					for(j=0;j<2;j++) {
-//						c=*(consolas11+k*22*2+i*2+j);
-//						for (int b_k=0;b_k<8;b_k++) {
-//							if(c&(0x80>>b_k))	l_point(x+j*8+b_k,y+i,maxX2,maxY2,fc);
-//						}
-//					}
-//				}
-//				x+=10;
+//                    for(j=0;j<2;j++) {
+//                        c=*(consolas11+k*22*2+i*2+j);
+//                        for (int b_k=0;b_k<8;b_k++) {
+//                            if(c&(0x80>>b_k))    l_point(x+j*8+b_k,y+i,maxX2,maxY2,fc);
+//                        }
+//                    }
+//                }
+//                x+=10;
             }
             s++;
         } else {
@@ -673,22 +702,22 @@ void lui_draw_char(uint16_t x, int16_t y, unsigned char c,
 
 
 void lui_set_cache_size(int x, int y, int width, int length) {
-	for(int i = 0; i < CACHE_SIZE; i++) {
-		cache.array[i] = 0x00;
-	}
-	cache.coordinate.point.x = x;
-	cache.coordinate.point.y = y;
-	cache.coordinate.size.width = width;
-	cache.coordinate.size.length = length;
+    for(int i = 0; i < CACHE_SIZE; i++) {
+        cache.array[i] = 0x00;
+    }
+    cache.coordinate.point.x = x;
+    cache.coordinate.point.y = y;
+    cache.coordinate.size.width = width;
+    cache.coordinate.size.length = length;
 }
 
 lui_layout_t * lui_get_cache_size(void) {
-	return &cache.coordinate;
+    return &cache.coordinate;
 }
 
 extern void lsdl_box(int x, int y, int width, int length, uint16_t * color);
 void lui_cachedev(int x, int y, int width, int length) {
-	lsdl_box(x,y,width,length,cache.array);
+    lsdl_box(x,y,width,length,cache.array);
 }
 
 //
@@ -705,12 +734,12 @@ void lui_cachedev(int x, int y, int width, int length) {
 //    int maxX2 = cache.coordinate.x + cache.coordinate.size.width;
 //    int maxY2 = cache.coordinate.y + cache.coordinate.size.length;
 //    for(i=0;i<16;i++) {
-//		for(j=0;j<2;j++) {
-//			c=*(fs+num*16*2+i*2+j);
-//			for (k=0;k<8;k++) {
-//				if(c&(0x80>>k))	l_point(x+j*8+k,y+i,maxX2,maxY2,fc);
-//			}
-//		}
+//        for(j=0;j<2;j++) {
+//            c=*(fs+num*16*2+i*2+j);
+//            for (k=0;k<8;k++) {
+//                if(c&(0x80>>k))    l_point(x+j*8+k,y+i,maxX2,maxY2,fc);
+//            }
+//        }
 //    }
 //}
 //
@@ -720,32 +749,32 @@ void lui_cachedev(int x, int y, int width, int length) {
 //int a,b,c;
 //
 //float pixel_value(int x,int y) {
-//	int i,j;
-//	static int k = 0;
-//	float q = 0.0,d,d1,d2,t1,t2;
-//	if(k == 1) {
-//		t1 = a * (x - 1.0/3) + b * (y+1.0/3) + c;
-//		d1 = 4 * t1 * t1 - a*a - b*b;
-//		t2 = a * (x + 1.0/3) + b * (y - 1.0/3) + c;
-//		d2 = 4 * t2 * t2 - a * a - b*b;
-//		if(d1 <= 0 && d2 <= 0) {
-//			q = 1;
-//		} else {
-//			//q = color - value(x,y);
-//		}
-//		if(!k) {
-//			t1 = a*x + b * y + c;
-//			d = 4*t1*t1 - a*a - b*b;
-//			if(d> 0) {
-//				for(i =0; i < 3; i++) {
-//					t1 = a*(x+1.0/3*(i-1)) + b * (y+1.0/3) + c;
-//					d = 4*t1*t1 - a*a - b*b;
-//					if(d <= 0) {
-//						q += (float)s[i][2]/16;
-//					}
-//				}
-//			}
-//		}
-//	}
+//    int i,j;
+//    static int k = 0;
+//    float q = 0.0,d,d1,d2,t1,t2;
+//    if(k == 1) {
+//        t1 = a * (x - 1.0/3) + b * (y+1.0/3) + c;
+//        d1 = 4 * t1 * t1 - a*a - b*b;
+//        t2 = a * (x + 1.0/3) + b * (y - 1.0/3) + c;
+//        d2 = 4 * t2 * t2 - a * a - b*b;
+//        if(d1 <= 0 && d2 <= 0) {
+//            q = 1;
+//        } else {
+//            //q = color - value(x,y);
+//        }
+//        if(!k) {
+//            t1 = a*x + b * y + c;
+//            d = 4*t1*t1 - a*a - b*b;
+//            if(d> 0) {
+//                for(i =0; i < 3; i++) {
+//                    t1 = a*(x+1.0/3*(i-1)) + b * (y+1.0/3) + c;
+//                    d = 4*t1*t1 - a*a - b*b;
+//                    if(d <= 0) {
+//                        q += (float)s[i][2]/16;
+//                    }
+//                }
+//            }
+//        }
+//    }
 //}
 

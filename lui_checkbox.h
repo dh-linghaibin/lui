@@ -16,9 +16,9 @@ extern "C" {
 
 
 typedef struct _lui_checkbox {
-	uint8_t flag;
-	uint16_t color;
-	void (*on_click)(lui_obj_t * obj);
+    uint8_t flag;
+    uint16_t color;
+    void (*on_click)(lui_obj_t * obj);
 } lui_checkbox;
 
 lui_obj_t * lui_create_checkbox(int x,int y);

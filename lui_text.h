@@ -15,8 +15,8 @@ extern "C" {
 #include "lui_obj.h"
 
 typedef struct _lui_text {
-	char * tex;
-	uint16_t color;
+    char * tex;
+    uint16_t color;
 } lui_text;
 
 lui_obj_t * lui_create_text(int x,int y);
