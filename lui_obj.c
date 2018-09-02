@@ -250,7 +250,6 @@ void lui_obj_traverse(lui_obj_t * obj) {
 				if(f_layout.point.y < stack_point.y) {
 					f_layout.point.y = stack_point.y;
 				}
-
 				printf("^ %d %d---%d^", h1,h2,f_layout.point.x+f_layout.size.length);
     		}
 			printf("father-\n");
