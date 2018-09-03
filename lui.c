@@ -45,19 +45,22 @@ void lui_init(void) {
     lui_obj_set_width(list3,140);
     lui_obj_set_length(list3,70);
     lui_list_add_item(list3,list2);
-    lui_list_set_backcolor(list3,lui_color565(green));
+    // lui_list_set_backcolor(list3,lui_color565(green));
+    // lui_list_add_item(list3,lui_create_button(100,20));
+    // lui_list_add_item(list3,lui_create_bar(100,20));
+    // lui_list_add_item(list3,lui_create_button(100,20));
+    // lui_list_add_item(list3,lui_create_bar(100,20));
 
-    lui_obj_t * list4 = lui_create_list(50,50);
-    lui_obj_set_width(list4,160);
-    lui_obj_set_length(list4,80);
-    lui_list_add_item(list4,list3);
-    
-    lui_list_set_backcolor(list4,lui_color565(yellow));
+    // lui_obj_t * list4 = lui_create_list(50,50);
+    // lui_obj_set_width(list4,160);
+    // lui_obj_set_length(list4,80);
+    // lui_list_add_item(list4,list3);
+    // lui_list_set_backcolor(list4,lui_color565(yellow));
 
     lui_obj_t * list5 = lui_create_list(50,50);
     lui_obj_set_width(list5,180);
     lui_obj_set_length(list5,90);
-    lui_list_add_item(list5,list4);
+    lui_list_add_item(list5,list3);
     lui_obj_add_child(lui_get_root(),list5);
     lui_list_set_backcolor(list5,lui_color565(pink));
 
