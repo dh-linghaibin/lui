@@ -8,6 +8,7 @@
 #include "lui_list.h"
 #include "lui_color.h"
 #include "lui_draw.h"
+// #include "material/fruit.h"
 
 static void lui_list_design (struct _lui_obj_t * obj, lui_point_t *point);
 static void lui_list_event(lui_touch_val_t *val);
@@ -16,15 +17,17 @@ lui_obj_t * lui_create_list(int x,int y) {
     lui_list * list = lui_malloc(sizeof(lui_list));
     list->move_val = 0;
     list->abs_val = 0;
+    list->back_color = lui_color565(white);
     lui_obj_t * obj = lui_create_obj(x,y,100,200,list,lui_list_design);
     lui_obj_set_event(obj,lui_list_event);
-
-//    for(int i = 0; i < 10;i++) {
-//        lui_obj_t * val = lui_create_text(10,list->abs_val+i*35);
-//        lui_text_set_text(val,"abs");
-//        lui_obj_add_child(obj,val);
-//    }
     return obj;
+}
+
+void lui_list_set_backcolor(lui_obj_t * obj, uint16_t color) {
+    if(obj != NULL) {
+        lui_list * list = obj->val;
+        list->back_color = color;
+    }
 }
 
 void lui_list_set_size(lui_obj_t * list, int width, int length) {
@@ -61,7 +64,9 @@ static void lui_list_design (struct _lui_obj_t * obj, lui_point_t *point) {
                     point->y,
                     obj->layout.size.width,
                     obj->layout.size.length,
-                    150,0xffff);
+                    0,list->back_color);
+    // lui_draw_png(point->x,point->y,39,48,qwe_pixel_map);
+    // lui_draw_line(0,130,240,130,0xffff);
 }
 
 static void lui_list_event(lui_touch_val_t *val) {

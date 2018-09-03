@@ -460,12 +460,12 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,char num, uint16
     }
 }
 
-void lui_draw_text(int s_x, int s_y, uint16_t color, uint8_t bold, char * tex) {
+void lui_draw_text(int s_x, int s_y, uint16_t color, lui_font_type type, char * tex) {
     int ax = s_x;
-    lui_font font = lui_font_get(LFT_Y_CONSOLA_10);
+    lui_font font = lui_font_get(type);
     while(*tex) {
         lui_draw_font(ax, s_y,font.wight, font.length, *tex++, color,font.font);
-        ax += (bold*7);
+        ax += (font.wight);
     }
 }
 

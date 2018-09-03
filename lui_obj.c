@@ -184,14 +184,13 @@ lui_point_t stack_point;
 
 int tree_layer = 0;
 int tree_layer2 = 0;
-
+int xxx = 0;
 void lui_obj_traverse(lui_obj_t * obj) {
     if (obj == NULL) {
         tree_layer --;
         return;
     } else {
         tree_layer++;
-//        printf("%d \n",tree_layer);
         if(tree_layer2 > tree_layer) {
             int i = tree_layer2-tree_layer;
             while(i > 0) {
@@ -207,7 +206,6 @@ void lui_obj_traverse(lui_obj_t * obj) {
         tree_layer2 = tree_layer;
         if(obj->child != NULL) {
             if(obj->father == NULL) {
-                printf("start---");
                 tree_layer = 0;
                 stack_point.x = 0;
                 stack_point.y = 0;
@@ -215,48 +213,49 @@ void lui_obj_traverse(lui_obj_t * obj) {
                 f_layout.point.y = 0;
                 f_layout.size.width = LCD_WIDTH;
                 f_layout.size.length = LCD_LENGTH;
-            } else {
                 last_stack = obj;
-
-                int w1 = stack_point.x + f_layout.size.width;
-                int h1 = stack_point.y + f_layout.size.length;
-
+                xxx = 0;
+                printf("-------------\n");
+            } else {
+                int g_y = f_layout.point.y + f_layout.size.length;
+                last_stack = obj;
                 stack_point.x += last_stack->layout.point.x;
                 stack_point.y += last_stack->layout.point.y;
-
-                int w2 = stack_point.x + last_stack->layout.size.width;
-                int h2 = stack_point.y + last_stack->layout.size.length;
-
-                if(h2 < h1) {
-                    f_layout.size.length = last_stack->layout.size.length;
-                    if(f_layout.point.y > stack_point.y) {
-                        f_layout.size.length -= f_layout.point.y - stack_point.y;
-                        // printf("%d %d---",f_layout.point.y , stack_point.y);
-                    }
-                } else if(h2 > h1) {
-                    if((h2 - h1) > f_layout.size.length) {
-                        f_layout.size.length = 0;
-                        tree_layer --;
-                        return ;
-                    } else {
-                        f_layout.size.length -= (h2 - h1);
-                    }
-                }
-                // printf("--^ %d %d---%d^---", h1,h2,f_layout.point.x+f_layout.size.length);
                 if(f_layout.point.x < stack_point.x) {
                     f_layout.point.x = stack_point.x;
                 }
-
+                
                 if(f_layout.point.y < stack_point.y) {
+                    printf("%d-",stack_point.y - f_layout.point.y );
                     f_layout.point.y = stack_point.y;
-                    printf("&&&&");
+                    xxx = 0;
+                } else {
+                    printf("null-%d-", f_layout.point.y - stack_point.y);
+                    xxx = f_layout.point.y - stack_point.y;
                 }
-                printf("^ %d %d---%d^", h1,h2,f_layout.point.x+f_layout.size.length);
+                f_layout.size.length = last_stack->layout.size.length;
+                int x_y = f_layout.point.y + f_layout.size.length;
+                if(x_y > g_y) {
+                    int c_y = x_y - g_y;
+                    if(c_y >= f_layout.size.length) {
+                        f_layout.size.length = 0;
+                        tree_layer --;
+                        return;
+                    } else {
+                        f_layout.size.length -= c_y;
+                    }
+                }
+                if( (f_layout.size.length - xxx) > 0 ) {
+                    //f_layout.size.length -= xxx;
+                } else {
+                    f_layout.size.length = 0;
+                    tree_layer --;
+                    return;
+                }
+                 printf("-%d -",obj->layout.point.y);
+                printf("j -%d -- %d---%d\n",g_y, x_y,f_layout.point.y + f_layout.size.length);
             }
-            printf("father-\n");
         }
-//        printf("-- %d, %d, %d, %d \n",obj->layout.point.x,obj->layout.point.y,
-//                obj->layout.size.width,obj->layout.size.length);
         if(obj->design != NULL) {
             lui_point_t point;
             if(last_stack == obj) {

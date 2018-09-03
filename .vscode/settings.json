@@ -10,7 +10,10 @@
         "lui_font_mate.h": "c",
         "lui_font.h": "c",
         "setjmp.h": "c",
-        "lui_obj.h": "c"
+        "lui_obj.h": "c",
+        "lui_config.h": "c",
+        "type_traits": "c",
+        "fruit.h": "c"
     },
     "python.jediEnabled": false
 }
