@@ -6,7 +6,7 @@
  */
 
 #include "lui_draw.h"
-#include "lui_font_mate.h"
+#include "lui_font.h"
 
 typedef struct _lcache {
     uint16_t array[CACHE_SIZE];
@@ -129,8 +129,8 @@ void lui_draw_line(int s_x, int s_y, int e_x, int e_y, uint16_t color) {
     int maxy2 = cache.coordinate.point.y + cache.coordinate.size.length;
     if (!((s_x + e_x) < cache.coordinate.point.x || s_x > maxx2 || (s_y + e_y) < cache.coordinate.point.y || s_y > maxy2)) {
         int dx,dy,dx2,dy2,x_inc,y_inc,error,index;
-        dx = e_x-s_x;//����x����
-        dy = e_y-s_y;//����y����
+        dx = e_x-s_x;
+        dy = e_y-s_y;
         if (dx>=0) {
             x_inc = 1;
         } else {
@@ -409,9 +409,9 @@ void lui_draw_icon(int x, int y, int width, int length, const unsigned int * mat
     }
 }
 
-void lui_draw_font(int x, int y, uint8_t type, char num, uint16_t color) {
-    uint8_t font_w = 7;
-    uint8_t font_l = 9;
+void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,char num, uint16_t color, const uint8_t * mate) {
+    uint8_t font_w = wighth;
+    uint8_t font_l = length;
     int maxX1 = x + font_w;
     int maxY1 = y + font_l;
     int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
@@ -441,8 +441,12 @@ void lui_draw_font(int x, int y, uint8_t type, char num, uint16_t color) {
         }
         for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
             for(int x_j = x1; x_j < x2; x_j++) {
-                if(font_y_10[(ptr)] != 0) {
-                    cache.array[y_i+x_j] = lui_alpha_blend(color,cache.array[y_i+x_j],font_y_10[(ptr)]);
+                if(mate[ptr] != 0) {
+                    if(mate[ptr] == 0xff) {
+                        cache.array[y_i+x_j] = color;
+                    } else {
+                        cache.array[y_i+x_j] = lui_alpha_blend(color,cache.array[y_i+x_j],mate[(ptr)]);
+                    }
                 }
                 ptr++;
             }
@@ -458,8 +462,9 @@ void lui_draw_font(int x, int y, uint8_t type, char num, uint16_t color) {
 
 void lui_draw_text(int s_x, int s_y, uint16_t color, uint8_t bold, char * tex) {
     int ax = s_x;
+    lui_font font = lui_font_get(LFT_Y_CONSOLA_10);
     while(*tex) {
-        lui_draw_font(ax, s_y, 0, *tex++, color);
+        lui_draw_font(ax, s_y,font.wight, font.length, *tex++, color,font.font);
         ax += (bold*7);
     }
 }

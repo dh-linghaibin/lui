@@ -9,14 +9,14 @@
 
 uint16_t lui_color565(uint32_t rgb) {
     uint8_t  r, g, b;
-    b = ( rgb >> (0+3) ) & 0x1f;// ȡBɫ�ĸ�5λ
-    g = ( rgb >> (8+2) ) & 0x3f;// ȡGɫ�ĸ�6λ
-    r = ( rgb >> (16+3)) & 0x1f;// ȡRɫ�ĸ�5λ
+    b = ( rgb >> (0+3) ) & 0x1f;
+    g = ( rgb >> (8+2) ) & 0x3f;
+    r = ( rgb >> (16+3)) & 0x1f;
     return( (r<<11) + (g<<5) + (b<<0) );
 }
 
 uint16_t lui_alpha_blend(uint16_t fr_c,uint16_t bk_c,uint8_t alpha) {
-    color565 color, color_fr_c,color_bk_c ;
+    register color565 color, color_fr_c,color_bk_c ;
     color_fr_c.rgb565 = fr_c;
     color_bk_c.rgb565 = bk_c;
     color.rgb.r = ( color_fr_c.rgb.r * alpha + color_bk_c.rgb.r * (0xff-alpha) ) >> 8;
@@ -25,11 +25,6 @@ uint16_t lui_alpha_blend(uint16_t fr_c,uint16_t bk_c,uint8_t alpha) {
     return color.rgb565;
 }
 
-//����ALPHA BLENDING�㷨.
-//src:Դ��ɫ
-//dst:Ŀ����ɫ
-//alpha:͸���̶�(0~32)
-//����ֵ:��Ϻ����ɫ.
 uint16_t lui_alpha_blend565(uint16_t src,uint16_t dst,uint8_t alpha) {
     uint32_t src2;
     uint32_t dst2;

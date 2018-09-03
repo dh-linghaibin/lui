@@ -7,7 +7,10 @@
         "lui_color.h": "c",
         "lui_draw.h": "c",
         "lui_list.h": "c",
-        "lui_font_mate.h": "c"
+        "lui_font_mate.h": "c",
+        "lui_font.h": "c",
+        "setjmp.h": "c",
+        "lui_obj.h": "c"
     },
     "python.jediEnabled": false
 }

@@ -14,10 +14,10 @@ static void lui_button_event(lui_touch_val_t *val);
 
 lui_obj_t * lui_create_button(int x,int y) {
     lui_button * but = lui_malloc(sizeof(lui_button));
-    but->tex = "Enter";
+    but->tex = "linghaibin";
     but->tex_size = 5;
     but->color = lui_color565(white);
-    but->tex_color = lui_color565(red);
+    but->tex_color = lui_color565(green);
     but->alpha = 0;
     but->bold = 1;
     but->on_click = NULL;
