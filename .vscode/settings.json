@@ -13,7 +13,9 @@
         "lui_obj.h": "c",
         "lui_config.h": "c",
         "type_traits": "c",
-        "fruit.h": "c"
+        "fruit.h": "c",
+        "lui_text.h": "c",
+        "lui_button.h": "c"
     },
     "python.jediEnabled": false
 }

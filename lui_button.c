@@ -43,6 +43,11 @@ void lui_button_set_color(lui_obj_t * obj, uint16_t color) {
     but->color = color;
 }
 
+void lui_button_text_set_color(lui_obj_t * obj, uint16_t color) {
+    lui_button * but = obj->val;
+    but->tex_color = color;
+}
+
 void lui_button_set_size(lui_obj_t * obj, int width,int length) {
     lui_obj_set_width(obj,width);
     lui_obj_set_length(obj,length);

@@ -74,7 +74,7 @@ static void but_on_click_down(lui_obj_t * obj) {
         kb->tips = lui_create_button(-10,-10);
         lui_obj_add_child(lui_get_root(),kb->tips);
         lui_button_set_size(kb->tips,30,30);
-        lui_button_set_color(kb->tips,lui_color565(blue));
+        lui_button_set_color(kb->tips,lui_color565(pink));
     }
     lui_button_set_text(kb->tips,but->tex);
     kb->tips->layout.point.y = point.y-40;
