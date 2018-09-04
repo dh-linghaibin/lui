@@ -1,5 +1,5 @@
-output.exe: sram.o lui_font.o lui_draw.o lui_obj.o lui_bar.o lui_button.o lui_checkbox.o lui_color.o lui_icon.o lui_keyboard.o lui_list.o lui_text.o lui.o app.o 
-	gcc sram.o lui_font.o lui_draw.o lui_obj.o lui_bar.o lui_button.o lui_checkbox.o lui_color.o lui_icon.o lui_keyboard.o lui_list.o lui_text.o lui.o app.o -g -o output -lmingw32 -lSDL2main -lSDL2
+output.exe: sram.o lui_fxaa.o lui_font.o lui_draw.o lui_obj.o lui_bar.o lui_button.o lui_checkbox.o lui_color.o lui_icon.o lui_keyboard.o lui_list.o lui_text.o lui.o app.o 
+	gcc sram.o lui_fxaa.o lui_font.o lui_draw.o lui_obj.o lui_bar.o lui_button.o lui_checkbox.o lui_color.o lui_icon.o lui_keyboard.o lui_list.o lui_text.o lui.o app.o -g -o output -lmingw32 -lSDL2main -lSDL2
 
 app.o:app.c lui_config.h
 	gcc -g -c app.c
@@ -42,6 +42,9 @@ lui_text.o: lui_text.c lui_text.h lui_config.h
 
 lui.o: lui.c lui.h lui_config.h lui_bar.h lui_icon.h
 	gcc -g -c lui.c
+
+lui_fxaa.o: lui_fxaa.c lui_fxaa.h lui_config.h
+	gcc -g -c lui_fxaa.c
 
 
 clean:

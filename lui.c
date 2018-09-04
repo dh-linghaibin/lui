@@ -15,7 +15,7 @@ void lui_init(void) {
     lui_obj_add_child(lui_get_root(),icon);
 
     lui_obj_t *text = lui_create_text(10,10);
-    lui_obj_add_child(lui_get_root(),text);
+    // lui_obj_add_child(lui_get_root(),text);
     char * name = lui_malloc(sizeof(char)*17);
     name = "Container Qiantao";
     lui_text_set_text(text,name);
@@ -40,6 +40,7 @@ void lui_init(void) {
     lui_obj_t * list1 = lui_create_list(0,0);
     lui_obj_set_width(list1,100);
     lui_obj_set_length(list1,50);
+    lui_obj_add_child(list1,text);
     lui_list_set_backcolor(list1,lui_color565(white));
 
     lui_obj_t * list2 = lui_create_list(0,0);

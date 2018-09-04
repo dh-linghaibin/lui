@@ -217,12 +217,25 @@ void lui_obj_traverse(lui_obj_t * obj) {
                 last_stack = obj;
             } else {
                 int g_y = f_layout.point.y + f_layout.size.length;
-                int f_y = last_stack->layout.point.y;
+                int g_x = f_layout.point.x + f_layout.size.width;
                 last_stack = obj;
                 stack_point.x += last_stack->layout.point.x;
                 stack_point.y += last_stack->layout.point.y;
+                
+                f_layout.size.width = last_stack->layout.size.width;
+                int x_x = stack_point.x + f_layout.size.width;
                 if(f_layout.point.x < stack_point.x) {
                     f_layout.point.x = stack_point.x;
+                }
+                if(x_x > g_x) {
+                    int c_x = x_x - g_x;
+                    if(c_x >= f_layout.size.width) {
+                        f_layout.size.width = 0;
+                        // tree_layer --;
+                        // return;
+                    } else {
+                        f_layout.size.width -= c_x;
+                    }
                 }
 
                 f_layout.size.length = last_stack->layout.size.length;

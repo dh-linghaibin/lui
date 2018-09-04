@@ -85,8 +85,6 @@ static void lui_list_event(lui_touch_val_t *val) {
         }
     }
     if(val->falg == 0) {
-        // val->abs_y = 0;
-        // list->move_val = 20;
         list->abs_val += val->abs_y - list->move_val;
         lui_obj_t * child;
         child = val->obj->child;
