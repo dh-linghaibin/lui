@@ -144,40 +144,6 @@ void lui_obj_distroy(lui_obj_t ** obj) {
 }
 
 extern lui_layout_t f_layout;
-static lui_obj_t * _f_layout_obj = NULL;
-
-void _lui_obj_father_size(lui_obj_t * obj) {
-//    lui_obj_t * f_obj = obj->father;
-//    while(f_obj != NULL) {
-//        printf("%d, %d, %d, %d \n",f_obj->layout.point.x,f_obj->layout.point.y,
-//                f_obj->layout.size.width,f_obj->layout.size.length);
-//        f_obj = f_obj->father;
-//    }
-    f_layout.point.x = 0;
-    f_layout.point.y = 0;
-    f_layout.size.width = LCD_WIDTH;
-    f_layout.size.length = LCD_LENGTH;
-}
-
-static void lui_obj_get_father_layout(lui_point_t * pos, lui_obj_t * obj, lui_layout_t * layout) {
-    lui_obj_t * f_obj = obj->father;
-    layout->point.x = 0;
-    layout->point.y = 0;
-    layout->size.width = LCD_WIDTH;
-    layout->size.length = LCD_LENGTH;
-    if(f_obj == NULL) {
-        layout->point.x = 0;
-        layout->point.y = 0;
-        layout->size.width = LCD_WIDTH;
-        layout->size.length = LCD_LENGTH;
-    } else {
-        if(_f_layout_obj == f_obj) {
-
-        } else {
-
-        }
-    }
-}
 
 static lui_obj_t * last_stack = NULL;
 static lui_point_t stack_point;
@@ -294,24 +260,96 @@ static lui_touch_val_t touch_val = {
 
 void _lui_obj_even(lui_obj_t * obj, int x, int y, uint8_t flag) {
     if (obj == NULL) {
+        tree_layer --;
         return;
     } else {
+        tree_layer++;
+        if(last_tree_layer > tree_layer) {
+            int i = last_tree_layer-tree_layer;
+            while(i > 0) {
+                i--;
+                if(last_stack != NULL) {
+                    stack_point.x -= last_stack->layout.point.x;
+                    stack_point.y -= last_stack->layout.point.y;
+                    last_stack = last_stack->father;
+                }
+            }
+            f_layout = mlayout[tree_layer-1];
+        }
+        last_tree_layer = tree_layer;
+        if(obj->child != NULL) {
+            if(obj->father == NULL) {
+                tree_layer = 0;
+                stack_point.x = 0;
+                stack_point.y = 0;
+                f_layout.point.x = 0;
+                f_layout.point.y = 0;
+                f_layout.size.width = LCD_WIDTH;
+                f_layout.size.length = LCD_LENGTH;
+                mlayout[0] = f_layout;
+                last_stack = obj;
+            } else {
+                int g_y = f_layout.point.y + f_layout.size.length;
+                int g_x = f_layout.point.x + f_layout.size.width;
+                last_stack = obj;
+                stack_point.x += last_stack->layout.point.x;
+                stack_point.y += last_stack->layout.point.y;
+                
+                f_layout.size.width = last_stack->layout.size.width;
+                int x_x = stack_point.x + f_layout.size.width;
+                if(f_layout.point.x < stack_point.x) {
+                    f_layout.point.x = stack_point.x;
+                }
+                if(x_x > g_x) {
+                    int c_x = x_x - g_x;
+                    if(c_x >= f_layout.size.width) {
+                        f_layout.size.width = 0;
+                    } else {
+                        f_layout.size.width -= c_x;
+                    }
+                }
+
+                f_layout.size.length = last_stack->layout.size.length;
+                int x_y = stack_point.y + f_layout.size.length;
+                if(f_layout.point.y < stack_point.y) {
+                    f_layout.point.y = stack_point.y;
+                }
+                if(x_y > g_y) {
+                    int c_y = x_y - g_y;
+                    if(c_y >= f_layout.size.length) {
+                        f_layout.size.length = 0;
+                    } else {
+                        f_layout.size.length -= c_y;
+                    }
+                }
+                mlayout[tree_layer] = f_layout;
+            }
+        }
         if(obj->design != NULL) {
             lui_point_t point;
-            point.x = obj->layout.point.x;
-            point.y = obj->layout.point.y;
-            lui_obj_coupoint(obj,&point);
-            if( ( ( x >= point.x && x <= (point.x + obj->layout.size.width) )
+            if(last_stack == obj) {
+                point.x = stack_point.x;
+                point.y = stack_point.y;
+            } else {
+                point.x = stack_point.x + obj->layout.point.x;
+                point.y = stack_point.y + obj->layout.point.y;
+            }
+            // printf("%d %d -- %d %d -- %d %d\n",x,y,point.x,point.y, point.x+f_layout.size.width,point.y+f_layout.size.length);
+            // if( ( ( x >= (point.x) && x <=  (point.x+f_layout.size.width) )
+            //     && ( y >= (point.y) && x <=  (point.y+f_layout.size.length) ) ) 
+            //     || obj->event_flag == 1 ) {
+                if( ( ( x >= point.x && x <= (point.x + obj->layout.size.width) )
                     && ( y >= point.y && y <= (point.y + obj->layout.size.length) ) )
                     || obj->event_flag == 1 ) {
-                    touch_val.event = obj->event;
-                    touch_val.abs_x = x - point.x;
-                    touch_val.abs_y = y - point.y;
-                    touch_val.rel_x = x;
-                    touch_val.rel_y = y;
-                    touch_val.falg  = flag;
-                    touch_val.obj   = obj;
-            }
+                        touch_val.event = obj->event;
+                        touch_val.abs_x = x - point.x;
+                        touch_val.abs_y = y - point.y;
+                        touch_val.rel_x = x;
+                        touch_val.rel_y = y;
+                        touch_val.falg  = flag;
+                        touch_val.obj   = obj;
+                }
+            // }
         }
         if(obj->event_flag == 0) {
             _lui_obj_even(obj->child,x,y,flag);
@@ -321,9 +359,17 @@ void _lui_obj_even(lui_obj_t * obj, int x, int y, uint8_t flag) {
 }
 
 void lui_obj_even(int x, int y, uint8_t flag) {
-    touch_val.obj = NULL;
-    touch_val.event = NULL;
-    _lui_obj_even(&lui_root,x,y,flag);
+    if(flag == 1 && touch_val.event != NULL) {
+        touch_val.abs_x = x - (touch_val.rel_x - touch_val.abs_x);
+        touch_val.abs_y = y - (touch_val.rel_y - touch_val.abs_y);
+        touch_val.rel_x = x;
+        touch_val.rel_y = y;
+        touch_val.falg  = flag;
+    } else {
+        touch_val.obj = NULL;
+        touch_val.event = NULL;
+        _lui_obj_even(&lui_root,x,y,flag);
+    }
     if(touch_val.event != NULL) {
         if(touch_val.falg == 2) {
             touch_val.obj->event_flag = 1;

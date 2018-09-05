@@ -412,49 +412,85 @@ void lui_draw_icon(int x, int y, int width, int length, const unsigned int * mat
 void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,char num, uint16_t color, const uint8_t * mate) {
     uint8_t font_w = wighth;
     uint8_t font_l = length;
+
     int maxX1 = x + font_w;
     int maxY1 = y + font_l;
     int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
     int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
-    if (!(maxX1 < cache.coordinate.point.x || x > maxX2 || maxY1 < cache.coordinate.point.y || y > maxY2)) {
-        int x1 = 0; int y1 = 0; int x2 = cache.coordinate.size.width; int y2 = cache.coordinate.size.length;
-        if(x >= cache.coordinate.point.x) {
-            x1 = x-cache.coordinate.point.x;
-        }
-        if(maxX1 < maxX2) {
-            x2 = cache.coordinate.size.width-(maxX2-maxX1);
-        }
-        if(y >= cache.coordinate.point.y) {
-            y1 = y-cache.coordinate.point.y;
-        }
-        if(maxY1 < maxY2) {
-            y2 = cache.coordinate.size.length-(maxY2-maxY1);
-        }
-        int address = num - ' ';
-        address *= font_w*font_l;
-        uint16_t ptr = address;
-        if(y < cache.coordinate.point.y) {
-            ptr += (cache.coordinate.point.y-y)*font_l;
-        }
-        if(x < cache.coordinate.point.x) {
-            ptr += (cache.coordinate.point.x-x);
-        }
-        for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
-            for(int x_j = x1; x_j < x2; x_j++) {
-                if(mate[ptr] != 0) {
-                    if(mate[ptr] == 0xff) {
-                        cache.array[y_i+x_j] = color;
-                    } else {
-                        cache.array[y_i+x_j] = lui_alpha_blend(color,cache.array[y_i+x_j],mate[(ptr)]);
-                    }
-                }
-                ptr++;
+
+    int l_x = f_layout.point.x + f_layout.size.width;
+    int l_y = f_layout.point.y + f_layout.size.length;
+
+    if (!(maxX1 < f_layout.point.x || x > l_x
+                    || maxY1 < f_layout.point.y || y > l_y )) {
+        if (!(maxX1 < cache.coordinate.point.x || x > maxX2 || maxY1 < cache.coordinate.point.y || y > maxY2)) {
+            int x1 = 0; int y1 = 0; int x2 = cache.coordinate.size.width; int y2 = cache.coordinate.size.length;
+
+            uint8_t deviation_y = 0;
+            int address = num - ' ';
+            address *= font_w*font_l;
+            uint16_t ptr = address;
+
+            if(f_layout.point.x > x) {
+                ptr += (f_layout.point.x-x);
+                deviation_y = ptr;
+                x = f_layout.point.x;
             }
-            if((x+font_w) > maxX2) {
-                ptr += ( (x+font_w) - maxX2);
+
+            if(f_layout.point.y > y) {
+                ptr += (f_layout.point.y-y)*font_w;
+                y = f_layout.point.y;
+            }
+
+            uint8_t aaa = 0;
+            if(maxX1 > l_x) {
+                aaa = maxX1-l_x;
+                maxX1 = l_x;
+            }
+
+            if(maxY1 > l_y) {
+                maxY1 = l_y;
+            }
+
+            if(x >= cache.coordinate.point.x) {
+                x1 = x-cache.coordinate.point.x;
+            }
+            if(maxX1 < maxX2) {
+                x2 = cache.coordinate.size.width-(maxX2-maxX1);
+            }
+            if(y >= cache.coordinate.point.y) {
+                y1 = y-cache.coordinate.point.y;
+            }
+            if(maxY1 < maxY2) {
+                y2 = cache.coordinate.size.length-(maxY2-maxY1);
+            }
+            if(y < cache.coordinate.point.y) {
+                ptr += (cache.coordinate.point.y-y)*font_w;
             }
             if(x < cache.coordinate.point.x) {
                 ptr += (cache.coordinate.point.x-x);
+            }
+            for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
+                for(int x_j = x1; x_j < x2; x_j++) {
+                    if(mate[ptr] != 0) {
+                        if(mate[ptr] == 0xff) {
+                            cache.array[y_i+x_j] = color;
+                        } else {
+                            cache.array[y_i+x_j] = lui_alpha_blend(color,cache.array[y_i+x_j],mate[(ptr)]);
+                        }
+                    }
+                    ptr++;
+                }
+                ptr += deviation_y;
+                if((x+font_w) > maxX2) {
+                    ptr += ( (x+font_w) - maxX2);
+                }
+                if(x < cache.coordinate.point.x) {
+                    ptr += (cache.coordinate.point.x-x);
+                }
+                if(aaa > 0) {
+                    ptr += aaa;
+                }
             }
         }
     }
