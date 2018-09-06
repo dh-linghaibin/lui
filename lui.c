@@ -10,6 +10,13 @@
 #include "lui_icon.h"
 #include "lui_list.h"
 
+lui_obj_t *xshow;
+
+void bar_r_event(lui_obj_t * obj) {
+    lui_bar * bar = obj->val;
+    //printf("%d \n",bar->val);
+    lui_text_set_color(xshow,lui_color_rgb( (obj->val),obj->val,obj->val));
+}
 
 void lui_init(void) {
     lui_obj_t * icon = lui_create_icon(0,0,320,240,desk);
@@ -83,11 +90,16 @@ void lui_init(void) {
     lui_obj_add_child(lui_get_root(),xl2);
     lui_list_set_backcolor(xl2,lui_color565(gainsboro));
 
-    lui_obj_t *xshow = lui_create_text(10,10);
+    xshow = lui_create_text(10,10);
     lui_obj_add_child(lui_get_root(),xshow);
     char * name = lui_malloc(sizeof(char)*17);
-    name = "三上下";
+    name = "全中文中文显示抗锯齿";
     lui_text_set_text(xshow,name);
+    lui_text_set_color(xshow,lui_color565(deepskyblue));
+
+    lui_obj_t* bar_r =  lui_create_bar(10,30);
+    lui_bar_set_event(bar_r,bar_r_event);
+    lui_obj_add_child(lui_get_root(),bar_r);
 }
 
 void lui_loop(void) {

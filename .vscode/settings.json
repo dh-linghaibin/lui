@@ -16,7 +16,8 @@
         "fruit.h": "c",
         "lui_text.h": "c",
         "lui_button.h": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "lui_bar.h": "c"
     },
     "python.jediEnabled": false
 }

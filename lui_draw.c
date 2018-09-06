@@ -427,9 +427,7 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,uint16_t num, ui
             int x1 = 0; int y1 = 0; int x2 = cache.coordinate.size.width; int y2 = cache.coordinate.size.length;
 
             uint8_t deviation_y = 0;
-            int address = num;
-            address *= font_w*font_l;
-            uint16_t ptr = 0;//address;
+            uint16_t ptr = 0;
             char *buffer;
             {
                 FILE *file;
@@ -437,7 +435,7 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,uint16_t num, ui
                 if(type == 0) {
                     file = fopen("img_.bin", "rb");
                 } else {
-                    file = fopen("font.bin", "rb");
+                    file = fopen("font_16.bin", "rb");
                 }
                 if (!file) {
                     // fprintf(stderr, "can't open file %s", "bin");
@@ -445,7 +443,9 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,uint16_t num, ui
                 }
                 fseek(file, 0, SEEK_END);
                 fileLen=font_w*font_l;
-                fseek(file, address, SEEK_SET);
+                for(uint16_t l_i = 0; l_i < num; l_i++) {
+                }
+                fseek(file, fileLen*num, SEEK_SET);
                 buffer=(char *)malloc(fileLen+1);
                 if (!buffer) {
                     fprintf(stderr, "Memory error!");

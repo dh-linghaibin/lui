@@ -28,6 +28,11 @@ void lui_text_set_text(lui_obj_t * obj, char * tex) {
     text->tex = tex;
 }
 
+void lui_text_set_color(lui_obj_t * obj, uint16_t color) {
+    lui_text * text = obj->val;
+    text->color = color;
+}
+
 static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
     lui_text * text = obj->val;
     int ax = point->x;
@@ -42,14 +47,13 @@ static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
                 break;
             }
         }
-        uint32_t adr = 0;
+        uint16_t adr = 0;
         int type = lui_font_utf8_to_unicode(&adr, tex);
         lui_draw_font(ax, ay,font.wight, font.length, adr, type,text->color);
         if(type == 0) {
             tex++;
         } else {
-            tex++;
-            tex++;
+            tex+=3;
         }
         ax += font.wight;
     }

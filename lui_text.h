@@ -23,6 +23,7 @@ typedef struct _lui_text {
 
 lui_obj_t * lui_create_text(int x,int y);
 void lui_text_set_text(lui_obj_t * obj, char * tex);
+void lui_text_set_color(lui_obj_t * obj, uint16_t color);
 
 #ifdef __cplusplus
 }

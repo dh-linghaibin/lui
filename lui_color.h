@@ -158,6 +158,9 @@ extern "C" {
 #define darkblue     0x00008b
 #define navy     0x000080
 
+#define RGB565(R, G, B) \
+    (((uint16_t) ((R) >> 3)) << 11) + (((uint16_t) ((G) >> 2)) << 5) + ((uint16_t) ((B) >> 3))
+
 typedef union {
     struct {
         uint16_t r : 5;

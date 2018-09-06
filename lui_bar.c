@@ -1,7 +1,7 @@
 /*
  * This file is part of the lui_bar.c
  *
- *  Copyright (c) : 2018��8��19�� linghaibin
+ *  Copyright (c) : 2018 linghaibin
  *      Author: a6735
  */
 
@@ -16,6 +16,7 @@ lui_obj_t * lui_create_bar(int x, int y) {
     bar->val = 1;
     bar->b_color = lui_color565(white);
     bar->t_color = lui_color565(white);
+    bar->on_event = NULL;
     lui_obj_t * obj = lui_create_obj(x,y,150,10,bar,lui_bar_design);
     lui_obj_set_event(obj,lui_bar_event);
     return obj;
@@ -24,6 +25,11 @@ lui_obj_t * lui_create_bar(int x, int y) {
 void lui_bar_set_val(lui_obj_t * obj, uint8_t val) {
     lui_bar * bar = obj->val;
     bar->val = val;
+}
+
+void lui_bar_set_event(lui_obj_t * obj, void (*on_event)(lui_obj_t * obj)) {
+    lui_bar * bar = obj->val;
+    bar->on_event = on_event;
 }
 
 static void lui_bar_design (struct _lui_obj_t * obj, lui_point_t *point) {
@@ -64,6 +70,9 @@ static void lui_bar_event(lui_touch_val_t *val) {
                 val->abs_x = 0;
             }
             bar->val = val->abs_x/(val->obj->layout.size.width*0.01);
+            if(bar->on_event != NULL) {
+                bar->on_event(val->obj);
+            }
         } break;
         case 2: {
             if(val->abs_x > val->obj->layout.size.width) {
@@ -73,6 +82,9 @@ static void lui_bar_event(lui_touch_val_t *val) {
                 val->abs_x = 0;
             }
             bar->val = val->abs_x/(val->obj->layout.size.width*0.01);
+            if(bar->on_event != NULL) {
+                bar->on_event(val->obj);
+            }
         } break;
     }
 }

@@ -11,14 +11,14 @@ start,end = (0x4E00, 0x9FA5)
 #     for codepoint in range(int(start),int(end)):
 #         f.write(chr(codepoint))
 
-fn_bin = "font" + ".bin"
+fn_bin = "font_16" + ".bin"
 f_bin = open(fn_bin, 'wb')
 
 # fn_txt = "img_lhb" + ".h"
 # f_txt = open(fn_txt, 'w')
 inc = ""
 
-font = ImageFont.truetype(font='china.ttf', size=10)
+font = ImageFont.truetype(font='china.ttf', size=16)
 pattern = re.compile(r'.{2}')
 # im = Image.new('1', (64, 32), (1))
 
@@ -27,14 +27,14 @@ for codepoint in range(int(start),int(end)):
     font_s = chr(codepoint);
     for j in font_s:
         # print (j,end = "")
-        im = Image.new("RGBA",(11,11),(255,255,255,0))
+        im = Image.new("RGBA",(16,16),(255,255,255,0))
         draw = ImageDraw.Draw(im)
-        draw.text((0, -2), j, font=font, fill = 'black')
+        draw.text((-1, -2), j, font=font, fill = 'black')
         # im.show()
         # inc = '';
         # inc += "/*-- " + j + " --*/\n";
-        for h in range(11):
-            for w in range(11):
+        for h in range(16):
+            for w in range(16):
                 r =  im.getpixel((w, h))[0] >> 3
                 g =  im.getpixel((w, h))[1] >> 2
                 b =  im.getpixel((w, h))[2] >> 3
