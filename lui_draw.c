@@ -430,6 +430,29 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,char num, uint16
             int address = num - ' ';
             address *= font_w*font_l;
             uint16_t ptr = address;
+            char *buffer;
+            {
+                FILE *file;
+                unsigned long fileLen;
+                int i;
+                file = fopen("img_.bin", "rb");
+                if (!file) {
+                    // fprintf(stderr, "can't open file %s", "bin");
+                    exit(1);
+                }
+                fseek(file, 0, SEEK_END);
+                fileLen=63;//ftell(file);
+                fseek(file, 63*address, SEEK_SET);
+                // printf("fileLen==%ld\n",fileLen);
+                buffer=(char *)malloc(fileLen+1);
+                if (!buffer) {
+                    fprintf(stderr, "Memory error!");
+                    fclose(file);
+                    exit(1);
+                }
+                fread(buffer, 1, fileLen+1, file);
+                fclose(file);
+            }
 
             if(f_layout.point.x > x) {
                 ptr += (f_layout.point.x-x);
@@ -472,11 +495,11 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,char num, uint16
             }
             for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
                 for(int x_j = x1; x_j < x2; x_j++) {
-                    if(mate[ptr] != 0) {
-                        if(mate[ptr] == 0xff) {
+                    if(buffer[ptr] != 0) {
+                        if(buffer[ptr] == 0xff) {
                             cache.array[y_i+x_j] = color;
                         } else {
-                            cache.array[y_i+x_j] = lui_alpha_blend(color,cache.array[y_i+x_j],mate[(ptr)]);
+                            cache.array[y_i+x_j] = lui_alpha_blend(color,cache.array[y_i+x_j],buffer[(ptr)]);
                         }
                     }
                     ptr++;

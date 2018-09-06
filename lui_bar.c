@@ -42,7 +42,7 @@ static void lui_bar_design (struct _lui_obj_t * obj, lui_point_t *point) {
                    point->y,
                    obj->layout.size.width,
                    obj->layout.size.length,
-                   200,bar->b_color);
+                   150,bar->b_color);
     lui_draw_frame(point->x,
                    point->y,
                    bar->val*(obj->layout.size.width*0.01),
