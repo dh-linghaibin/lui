@@ -28,6 +28,7 @@ typedef struct _lui_font {
 } lui_font;
 
 lui_font lui_font_get(lui_font_type type);
+int lui_font_utf8_to_unicode(uint32_t * unicode, char *utf8);
 
 #ifdef __cplusplus
 }

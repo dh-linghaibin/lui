@@ -10,62 +10,11 @@
 #include "lui_icon.h"
 #include "lui_list.h"
 
-void Utf8ToUnicode(char* unicode, char *utf8)
-{
-    char *pchar = utf8;
-    int nBytes = 0;
-     
-    if (0 == (*utf8 & 0x80)) 
-    {
-        /*
-         * single-byte char
-         */
-        nBytes = 1;
-        unicode[0] = *utf8;
-    }
-    else
-    {
-        /*
-         * 3-byte char (chinese char)
-         */
-        int i;
- 
-        if ( (*utf8 & 0xf0) == 0xe0 ) 
-        {
-            nBytes  = 3;
-            unicode[0] = ((utf8[0] & 0x0f) <<4) + ((utf8[1] & 0x3c) >>2);
-            unicode[1] = ((utf8[1] & 0x03) <<6) + (utf8[2] & 0x3f);
-        }
-        else
-        {
-            nBytes = 0;
-            unicode[0] = '?';
-            return;
-        }
-    }
- 
-    return;
-}
-
-
 
 void lui_init(void) {
     lui_obj_t * icon = lui_create_icon(0,0,320,240,desk);
     lui_obj_add_child(lui_get_root(),icon);
 
-    lui_obj_t *text = lui_create_text(10,10);
-    // lui_obj_add_child(lui_get_root(),text);
-    char * name2 = lui_malloc(sizeof(char)*17);
-    char * cc = lui_malloc(sizeof(char)*17);
-    cc = "一";
-    Utf8ToUnicode(name2,cc);
-    printf("%d %d\n",name2[0],name2[1] );
-
-    char * name = lui_malloc(sizeof(char)*17);
-    char * xx = lui_malloc(sizeof(char)*17);
-    xx = "七";
-    Utf8ToUnicode(name,xx);
-    printf("%d %d\n",name[0],name[1] );
 //    lui_obj_t * but[5];
 //    for(int i = 0; i < 5;i++) {
 //        but[i] = lui_create_button(20,20+i*35);
@@ -86,7 +35,6 @@ void lui_init(void) {
     lui_obj_t * list1 = lui_create_list(0,0);
     lui_obj_set_width(list1,100);
     lui_obj_set_length(list1,55);
-    lui_obj_add_child(list1,text);
     lui_list_set_backcolor(list1,lui_color565(deepskyblue));
     lui_list_add_item(list1,lui_create_bar(100,20));
 
@@ -120,8 +68,8 @@ void lui_init(void) {
     lui_obj_add_child(lui_get_root(),list5);
     lui_list_set_backcolor(list5,lui_color565(pink));
 
-    lui_obj_t * keyboard = lui_create_keyboard(10,150);
-    lui_obj_add_child(lui_get_root(),keyboard);
+    // lui_obj_t * keyboard = lui_create_keyboard(10,150);
+    // lui_obj_add_child(lui_get_root(),keyboard);
 
     lui_obj_t * xl1 = lui_create_list(0,0);
     lui_obj_set_width(xl1,20);
@@ -135,8 +83,11 @@ void lui_init(void) {
     lui_obj_add_child(lui_get_root(),xl2);
     lui_list_set_backcolor(xl2,lui_color565(gainsboro));
 
-    // lui_obj_t * keyboard2 = lui_create_keyboard(0,0);
-    // lui_obj_add_child(lui_get_root(),keyboard2 );
+    lui_obj_t *xshow = lui_create_text(10,10);
+    lui_obj_add_child(lui_get_root(),xshow);
+    char * name = lui_malloc(sizeof(char)*17);
+    name = "三上下";
+    lui_text_set_text(xshow,name);
 }
 
 void lui_loop(void) {

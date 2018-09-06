@@ -409,7 +409,7 @@ void lui_draw_icon(int x, int y, int width, int length, const unsigned int * mat
     }
 }
 
-void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,char num, uint16_t color, const uint8_t * mate) {
+void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,uint16_t num, uint8_t type,uint16_t color) {
     uint8_t font_w = wighth;
     uint8_t font_l = length;
 
@@ -427,20 +427,24 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,char num, uint16
             int x1 = 0; int y1 = 0; int x2 = cache.coordinate.size.width; int y2 = cache.coordinate.size.length;
 
             uint8_t deviation_y = 0;
-            int address = num - ' ';
+            int address = num;
             address *= font_w*font_l;
             uint16_t ptr = 0;//address;
             char *buffer;
             {
                 FILE *file;
                 unsigned long fileLen;
-                file = fopen("img_.bin", "rb");
+                if(type == 0) {
+                    file = fopen("img_.bin", "rb");
+                } else {
+                    file = fopen("font.bin", "rb");
+                }
                 if (!file) {
                     // fprintf(stderr, "can't open file %s", "bin");
                     exit(1);
                 }
                 fseek(file, 0, SEEK_END);
-                fileLen=63;
+                fileLen=font_w*font_l;
                 fseek(file, address, SEEK_SET);
                 buffer=(char *)malloc(fileLen+1);
                 if (!buffer) {
@@ -513,6 +517,7 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,char num, uint16
                     ptr += aaa;
                 }
             }
+            free(buffer);
         }
     }
 }
@@ -521,7 +526,7 @@ void lui_draw_text(int s_x, int s_y, uint16_t color, lui_font_type type, char * 
     int ax = s_x;
     lui_font font = lui_font_get(type);
     while(*tex) {
-        lui_draw_font(ax, s_y,font.wight, font.length, *tex++, color,font.font);
+        //lui_draw_font(ax, s_y,font.wight, font.length, *tex++, color,font.font);
         ax += (font.wight);
     }
 }

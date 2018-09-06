@@ -219,7 +219,9 @@ void lui_obj_traverse(lui_obj_t * obj) {
                         f_layout.size.length -= c_y;
                     }
                 }
-                mlayout[tree_layer] = f_layout;
+                if(tree_layer >= 0 && tree_layer < 20) {
+                    mlayout[tree_layer] = f_layout;
+                }
             }
         }
         if(obj->design != NULL) {

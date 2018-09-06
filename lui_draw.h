@@ -32,6 +32,7 @@ void lui_draw_mesh( int x1, int y1, int x2, int y2, uint16_t c );
 void lui_draw_text(int s_x, int s_y, uint16_t color, lui_font_type type, char * tex);
 void lui_draw_icon(int x, int y, int width, int length, const unsigned int * material);
 void lui_draw_png(int x, int y, int width, int length, const uint8_t * material);
+void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,uint16_t num, uint8_t type,uint16_t color);
 
 void lui_set_cache_size(int x, int y, int width, int length);
 lui_layout_t * lui_get_cache_size(void);

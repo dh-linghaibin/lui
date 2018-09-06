@@ -8,6 +8,7 @@
 #include "lui_text.h"
 #include "lui_color.h"
 #include "lui_draw.h"
+#include "lui_font.h"
 
 static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point);
 static void lui_text_event(lui_touch_val_t *val);
@@ -41,7 +42,15 @@ static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
                 break;
             }
         }
-        lui_draw_font(ax, ay,font.wight, font.length, *tex++, text->color,font.font);
+        uint32_t adr = 0;
+        int type = lui_font_utf8_to_unicode(&adr, tex);
+        lui_draw_font(ax, ay,font.wight, font.length, adr, type,text->color);
+        if(type == 0) {
+            tex++;
+        } else {
+            tex++;
+            tex++;
+        }
         ax += font.wight;
     }
 }
