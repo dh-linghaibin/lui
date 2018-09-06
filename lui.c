@@ -10,16 +10,62 @@
 #include "lui_icon.h"
 #include "lui_list.h"
 
+void Utf8ToUnicode(char* unicode, char *utf8)
+{
+    char *pchar = utf8;
+    int nBytes = 0;
+     
+    if (0 == (*utf8 & 0x80)) 
+    {
+        /*
+         * single-byte char
+         */
+        nBytes = 1;
+        unicode[0] = *utf8;
+    }
+    else
+    {
+        /*
+         * 3-byte char (chinese char)
+         */
+        int i;
+ 
+        if ( (*utf8 & 0xf0) == 0xe0 ) 
+        {
+            nBytes  = 3;
+            unicode[0] = ((utf8[0] & 0x0f) <<4) + ((utf8[1] & 0x3c) >>2);
+            unicode[1] = ((utf8[1] & 0x03) <<6) + (utf8[2] & 0x3f);
+        }
+        else
+        {
+            nBytes = 0;
+            unicode[0] = '?';
+            return;
+        }
+    }
+ 
+    return;
+}
+
+
+
 void lui_init(void) {
     lui_obj_t * icon = lui_create_icon(0,0,320,240,desk);
     lui_obj_add_child(lui_get_root(),icon);
 
     lui_obj_t *text = lui_create_text(10,10);
     // lui_obj_add_child(lui_get_root(),text);
-    char * name = lui_malloc(sizeof(char)*17);
-    name = "LINGHai";
-    lui_text_set_text(text,name);
+    char * name2 = lui_malloc(sizeof(char)*17);
+    char * cc = lui_malloc(sizeof(char)*17);
+    cc = "一";
+    Utf8ToUnicode(name2,cc);
+    printf("%d %d\n",name2[0],name2[1] );
 
+    char * name = lui_malloc(sizeof(char)*17);
+    char * xx = lui_malloc(sizeof(char)*17);
+    xx = "七";
+    Utf8ToUnicode(name,xx);
+    printf("%d %d\n",name[0],name[1] );
 //    lui_obj_t * but[5];
 //    for(int i = 0; i < 5;i++) {
 //        but[i] = lui_create_button(20,20+i*35);

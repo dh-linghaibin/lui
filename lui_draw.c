@@ -429,21 +429,19 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,char num, uint16
             uint8_t deviation_y = 0;
             int address = num - ' ';
             address *= font_w*font_l;
-            uint16_t ptr = address;
+            uint16_t ptr = 0;//address;
             char *buffer;
             {
                 FILE *file;
                 unsigned long fileLen;
-                int i;
                 file = fopen("img_.bin", "rb");
                 if (!file) {
                     // fprintf(stderr, "can't open file %s", "bin");
                     exit(1);
                 }
                 fseek(file, 0, SEEK_END);
-                fileLen=63;//ftell(file);
-                fseek(file, 63*address, SEEK_SET);
-                // printf("fileLen==%ld\n",fileLen);
+                fileLen=63;
+                fseek(file, address, SEEK_SET);
                 buffer=(char *)malloc(fileLen+1);
                 if (!buffer) {
                     fprintf(stderr, "Memory error!");
