@@ -38,8 +38,11 @@ static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
     int ax = point->x;
     int ay = point->y;
     char * tex = text->tex;
-    lui_font font = lui_font_get(text->type);
+    lui_font font;
     while(*tex) {
+        
+        font = lui_font_get(text->type,tex);
+
         if(ax > (point->x+obj->layout.size.width)) {
             ax = point->x;
             ay += font.length;
@@ -47,10 +50,9 @@ static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
                 break;
             }
         }
-        uint16_t adr = 0;
-        int type = lui_font_utf8_to_unicode(&adr, tex);
-        lui_draw_font(ax, ay,font.wight, font.length, adr, type,text->color);
-        if(type == 0) {
+        lui_draw_font(ax, ay,font.wight, font.length,text->color,font.font);
+        lui_free(font.font);
+        if(font.type == 0) {
             tex++;
         } else {
             tex+=3;

@@ -16,7 +16,8 @@ uint16_t lui_color565(uint32_t rgb) {
 }
 
 uint16_t lui_color_rgb(uint8_t r, uint8_t g, uint8_t b) {
-    return (((uint16_t) ((r) >> 3)) << 11) + (((uint16_t) ((g) >> 2)) << 5) + ((uint16_t) ((b) >> 3));
+    return (uint16_t)( (( r   >> 3 ) << 11 ) | (( g >> 2 ) << 5  ) | ( b  >> 3 ));
+    //return (((uint16_t) ((r) >> 3)) << 11) + (((uint16_t) ((g) >> 2)) << 5) + ((uint16_t) ((b) >> 3));
 }
 
 uint16_t lui_alpha_blend(uint16_t fr_c,uint16_t bk_c,uint8_t alpha) {

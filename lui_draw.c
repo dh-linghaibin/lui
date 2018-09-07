@@ -409,7 +409,7 @@ void lui_draw_icon(int x, int y, int width, int length, const unsigned int * mat
     }
 }
 
-void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,uint16_t num, uint8_t type,uint16_t color) {
+void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length, uint16_t color, uint8_t * mate) {
     uint8_t font_w = wighth;
     uint8_t font_l = length;
 
@@ -428,34 +428,6 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,uint16_t num, ui
 
             uint8_t deviation_y = 0;
             uint16_t ptr = 0;
-            char *buffer;
-            {
-                FILE *file;
-                unsigned long fileLen;
-                if(type == 0) {
-                    file = fopen("img_.bin", "rb");
-                } else {
-                    file = fopen("font_16.bin", "rb");
-                }
-                if (!file) {
-                    // fprintf(stderr, "can't open file %s", "bin");
-                    exit(1);
-                }
-                fseek(file, 0, SEEK_END);
-                fileLen=font_w*font_l;
-                for(uint16_t l_i = 0; l_i < num; l_i++) {
-                }
-                fseek(file, fileLen*num, SEEK_SET);
-                buffer=(char *)malloc(fileLen+1);
-                if (!buffer) {
-                    fprintf(stderr, "Memory error!");
-                    fclose(file);
-                    exit(1);
-                }
-                fread(buffer, 1, fileLen+1, file);
-                fclose(file);
-            }
-
             if(f_layout.point.x > x) {
                 ptr += (f_layout.point.x-x);
                 deviation_y = ptr;
@@ -497,11 +469,11 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,uint16_t num, ui
             }
             for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
                 for(int x_j = x1; x_j < x2; x_j++) {
-                    if(buffer[ptr] != 0) {
-                        if(buffer[ptr] == 0xff) {
+                    if(mate[ptr] != 0) {
+                        if(mate[ptr] == 0xff) {
                             cache.array[y_i+x_j] = color;
                         } else {
-                            cache.array[y_i+x_j] = lui_alpha_blend(color,cache.array[y_i+x_j],buffer[(ptr)]);
+                            cache.array[y_i+x_j] = lui_alpha_blend(color,cache.array[y_i+x_j],mate[(ptr)]);
                         }
                     }
                     ptr++;
@@ -517,17 +489,7 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length,uint16_t num, ui
                     ptr += aaa;
                 }
             }
-            free(buffer);
         }
-    }
-}
-
-void lui_draw_text(int s_x, int s_y, uint16_t color, lui_font_type type, char * tex) {
-    int ax = s_x;
-    lui_font font = lui_font_get(type);
-    while(*tex) {
-        //lui_draw_font(ax, s_y,font.wight, font.length, *tex++, color,font.font);
-        ax += (font.wight);
     }
 }
 

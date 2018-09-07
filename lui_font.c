@@ -10,17 +10,41 @@
 
 //TODO: 凌海滨
 //FIXME: 测试
-lui_font lui_font_get(lui_font_type type) {
+lui_font lui_font_get(lui_font_type type, char *utf8) {
     switch(type) {
         case LFT_Y_CONSOLA_10 : {
-            // lui_font font_consola_10;
-            // font_consola_10.wight = 7;
-            // font_consola_10.length = 9;
-            // font_consola_10.font = lui_mate_font_consola_10;
             lui_font font_consola_10;
-            font_consola_10.wight = 16;
-            font_consola_10.length = 16;
-            font_consola_10.font = lui_mate_font_consola_10;
+            // font_consola_10.wight = 16;
+            // font_consola_10.length = 16;
+            uint16_t adr = 0;
+            font_consola_10.type = lui_font_utf8_to_unicode(&adr, utf8);
+            {
+                FILE *file;
+                unsigned long fileLen;
+                if(font_consola_10.type == 0) {
+                    font_consola_10.wight = 7;
+                    font_consola_10.length = 9;
+                    file = fopen("img_.bin", "rb");
+                } else {
+                    font_consola_10.wight = 16;
+                    font_consola_10.length = 16;
+                    file = fopen("font_16.bin", "rb");
+                }
+                if (!file) {
+                    exit(1);
+                }
+                fseek(file, 0, SEEK_END);
+                fileLen=font_consola_10.wight*font_consola_10.length;
+                fseek(file, fileLen*adr, SEEK_SET);
+                font_consola_10.font=(uint8_t *)lui_malloc(fileLen+1);
+                if (!font_consola_10.font) {
+                    fclose(file);
+                    exit(1);
+                }
+                fread(font_consola_10.font, 1, fileLen+1, file);
+                fclose(file);
+            }
+
             return font_consola_10;
         } break;
     }
@@ -56,3 +80,5 @@ int lui_font_utf8_to_unicode(uint16_t * unicode, char *utf8) {
     }
     return 0;
 }
+
+

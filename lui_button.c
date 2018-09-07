@@ -70,9 +70,9 @@ static void lui_button_design (struct _lui_obj_t * obj, lui_point_t *point) {
                     obj->layout.size.width,
                     obj->layout.size.length,
                     but->alpha,but->color);
-    int x = point->x + (obj->layout.size.width/2) - (but->tex_size*(but->bold*4.5)/2);
-    int y = point->y + (obj->layout.size.length/2) - but->bold*3.5;
-    lui_draw_text(x,y,but->tex_color, LFT_Y_CONSOLA_10,but->tex);
+    // int x = point->x + (obj->layout.size.width/2) - (but->tex_size*(but->bold*4.5)/2);
+    // int y = point->y + (obj->layout.size.length/2) - but->bold*3.5;
+    // lui_draw_text(x,y,but->tex_color, LFT_Y_CONSOLA_10,but->tex);
 }
 
 static void lui_button_event(lui_touch_val_t *val) {

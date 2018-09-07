@@ -17,7 +17,9 @@
         "lui_text.h": "c",
         "lui_button.h": "c",
         "typeinfo": "c",
-        "lui_bar.h": "c"
+        "lui_bar.h": "c",
+        "stdarg.h": "c",
+        "stdlib.h": "c"
     },
     "python.jediEnabled": false
 }
