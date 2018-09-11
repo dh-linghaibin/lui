@@ -73,32 +73,32 @@ void lui_init(void) {
     // lui_obj_add_child(lui_get_root(),xl2);
     // lui_list_set_backcolor(xl2,lui_color565(gainsboro));
 
-    lui_obj_t * keyboard = lui_create_keyboard(10,150);
-    lui_obj_add_child(lui_get_root(),keyboard);
+    // lui_obj_t * keyboard = lui_create_keyboard(10,150);
+    // lui_obj_add_child(lui_get_root(),keyboard);
 
-    lui_obj_t * but = lui_create_button(100,20);
-    lui_button_set_text(but,"ac");
-    lui_obj_add_child(lui_get_root(),but);
-    lui_text_set_color(but->child,lui_color565(red));
+    // lui_obj_t * but = lui_create_button(100,20);
+    // lui_button_set_text(but,"ac");
+    // lui_obj_add_child(lui_get_root(),but);
+    // lui_text_set_color(but->child,lui_color565(red));
 
-    xshow = lui_create_text(0,0);
-    lui_obj_add_child(lui_get_root(),xshow);
-    lui_text_set_text(xshow,"123");
-    lui_obj_set_width(xshow,32);
-    lui_obj_set_length(xshow,32);
-    lui_text_set_color(xshow,lui_color565(deepskyblue));
+    // xshow = lui_create_text(0,0);
+    // lui_obj_add_child(lui_get_root(),xshow);
+    // lui_text_set_text(xshow,"123");
+    // lui_obj_set_width(xshow,32);
+    // lui_obj_set_length(xshow,32);
+    // lui_text_set_color(xshow,lui_color565(deepskyblue));
 
-    lui_obj_t* bar_r =  lui_create_bar(10,50);
-    lui_bar_set_event(bar_r,bar_r_event);
-    lui_obj_add_child(lui_get_root(),bar_r);
+    // lui_obj_t* bar_r =  lui_create_bar(10,50);
+    // lui_bar_set_event(bar_r,bar_r_event);
+    // lui_obj_add_child(lui_get_root(),bar_r);
 
-    lui_obj_t* bar_g =  lui_create_bar(10,80);
-    lui_bar_set_event(bar_g,bar_g_event);
-    lui_obj_add_child(lui_get_root(),bar_g);
+    // lui_obj_t* bar_g =  lui_create_bar(10,80);
+    // lui_bar_set_event(bar_g,bar_g_event);
+    // lui_obj_add_child(lui_get_root(),bar_g);
 
-    lui_obj_t* bar_b =  lui_create_bar(10,110);
-    lui_bar_set_event(bar_b,bar_b_event);
-    lui_obj_add_child(lui_get_root(),bar_b);
+    // lui_obj_t* bar_b =  lui_create_bar(10,110);
+    // lui_bar_set_event(bar_b,bar_b_event);
+    // lui_obj_add_child(lui_get_root(),bar_b);
 }
 
 void lui_loop(void) {

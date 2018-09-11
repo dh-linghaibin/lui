@@ -25,6 +25,15 @@ static void l_point(int s_x, int s_y ,int m_x, int m_y, uint16_t color) {
     }
 }
 
+static uint16_t l_point_get(int s_x, int s_y ,int m_x, int m_y) {
+    if( ( s_x  >= cache.coordinate.point.x && s_x  < m_x ) &&
+    (  s_y >= cache.coordinate.point.y && s_y < m_y ) ) {
+        int xx = (s_x-cache.coordinate.point.x);
+        int yy = (s_y-cache.coordinate.point.y);
+        return cache.array[yy*cache.coordinate.size.width+xx];
+    }
+}
+
 void DrawWuLine ( short X0, short Y0, short X1, short Y1,
          short BaseColor, short NumLevels, unsigned short IntensityBits)
 {
@@ -102,8 +111,11 @@ void DrawWuLine ( short X0, short Y0, short X1, short Y1,
             weighting for the paired pixel */
          Weighting = ErrorAcc >> IntensityShift;
          l_point(X0, Y0, 800, 800, BaseColor + Weighting);
-         l_point(X0 + XDir, Y0, 800, 800,
-               BaseColor + (Weighting ^ WeightingComplementMask));
+         l_point(X0 + XDir, Y0, 800, 800,BaseColor + (Weighting ^ WeightingComplementMask));
+        //        printf("%d-",DeltaY);
+        // l_point(X0, Y0, 800, 800, lui_alpha_blend565(0x00,0xffff,Weighting));
+        // l_point(X0 + XDir, Y0, 800, 800, lui_alpha_blend565(0x00,0xffff,Weighting));
+        //  printf("%d-",ErrorAcc);
       }
       /* Draw the final pixel, which is 
          always exactly intersected by the line
@@ -128,13 +140,280 @@ void DrawWuLine ( short X0, short Y0, short X1, short Y1,
          intensity weighting for this pixel, and the complement of the
          weighting for the paired pixel */
       Weighting = ErrorAcc >> IntensityShift;
-      l_point(X0, Y0, 800, 800, BaseColor + Weighting);
-      l_point(X0 + XDir, Y0, 800, 800,
-            BaseColor + (Weighting ^ WeightingComplementMask));
+    //   l_point(X0, Y0, 800, 800, BaseColor + Weighting);
+    //   l_point(X0 + XDir, Y0, 800, 800,
+    //         BaseColor + (Weighting ^ WeightingComplementMask));
+    l_point(X0, Y0, 800, 800, lui_alpha_blend565(0x00,0xffff,DeltaY));
+      l_point(X0 + XDir, Y0, 800, 800,lui_alpha_blend565(0x00,0xffff,DeltaY));
    }
    /* Draw the final pixel, which is always exactly intersected by the line
       and so needs no weighting */
    l_point(X1, Y1, 800, 800, BaseColor);
+}
+
+void DrawWuLine2( int X0, int Y0, int X1, int Y1, uint16_t clrLine )
+{
+    /* Make sure the line runs top to bottom */
+    if (Y0 > Y1)
+    {
+        int Temp = Y0; Y0 = Y1; Y1 = Temp;
+        Temp = X0; X0 = X1; X1 = Temp;
+    }
+    
+    /* Draw the initial pixel, which is always exactly intersected by
+    the line and so needs no weighting */
+    l_point(X0, Y0, LCD_WIDTH, LCD_LENGTH, clrLine );
+    
+    int XDir, DeltaX = X1 - X0;
+    if( DeltaX >= 0 )
+    {
+        XDir = 1;
+    }
+    else
+    {
+        XDir   = -1;
+        DeltaX = 0 - DeltaX; /* make DeltaX positive */
+    }
+    
+    /* Special-case horizontal, vertical, and diagonal lines, which
+    require no weighting because they go right through the center of
+    every pixel */
+    int DeltaY = Y1 - Y0;
+    if (DeltaY == 0)
+    {
+        /* Horizontal line */
+        while (DeltaX-- != 0)
+        {
+            X0 += XDir;
+            l_point(X0, Y0, LCD_WIDTH, LCD_LENGTH, clrLine );
+        }
+        return;
+    }
+    if (DeltaX == 0)
+    {
+        /* Vertical line */
+        do
+        {
+            Y0++;
+            l_point(X0, Y0, LCD_WIDTH, LCD_LENGTH, clrLine );
+        } while (--DeltaY != 0);
+        return;
+    }
+    
+    if (DeltaX == DeltaY)
+    {
+        /* Diagonal line */
+        do
+        {
+            X0 += XDir;
+            Y0++;
+            l_point(X0, Y0, LCD_WIDTH, LCD_LENGTH, clrLine );
+        } while (--DeltaY != 0);
+        return;
+    }
+    
+    unsigned short ErrorAdj;
+    unsigned short ErrorAccTemp, Weighting;
+    
+    /* Line is not horizontal, diagonal, or vertical */
+    unsigned short ErrorAcc = 0;  /* initialize the line error accumulator to 0 */
+    
+    uint8_t rl = 0;//GetRValue( clrLine );
+    uint8_t gl = 0;//GetGValue( clrLine );
+    uint8_t bl = 0;//GetBValue( clrLine );
+    double grayl = rl * 0.299 + gl * 0.587 + bl * 0.114;
+    
+    /* Is this an X-major or Y-major line? */
+    if (DeltaY > DeltaX)
+    {
+    /* Y-major line; calculate 16-bit fixed-point fractional part of a
+    pixel that X advances each time Y advances 1 pixel, truncating the
+        result so that we won't overrun the endpoint along the X axis */
+        ErrorAdj = ((unsigned long) DeltaX << 16) / (unsigned long) DeltaY;
+        /* Draw all pixels other than the first and last */
+        while (--DeltaY) {
+            ErrorAccTemp = ErrorAcc;   /* remember currrent accumulated error */
+            ErrorAcc += ErrorAdj;      /* calculate error for next pixel */
+            if (ErrorAcc <= ErrorAccTemp) {
+                /* The error accumulator turned over, so advance the X coord */
+                X0 += XDir;
+            }
+            Y0++; /* Y-major, so always advance Y */
+                  /* The IntensityBits most significant bits of ErrorAcc give us the
+                  intensity weighting for this pixel, and the complement of the
+            weighting for the paired pixel */
+            Weighting = ErrorAcc >> 8;
+            // ASSERT( Weighting < 256 );
+            // ASSERT( ( Weighting ^ 255 ) < 256 );
+            
+            // COLORREF clrBackGround = ::GetPixel( pDC->m_hDC, X0, Y0 );
+            uint8_t rb = 0;//GetRValue( clrBackGround );
+            uint8_t gb = 0;//GetGValue( clrBackGround );
+            uint8_t bb = 0;//GetBValue( clrBackGround );
+            double grayb = rb * 0.299 + gb * 0.587 + bb * 0.114;
+            
+            uint8_t rr = ( rb > rl ? ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( rb - rl ) + rl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( rl - rb ) + rb ) ) );
+            uint8_t gr = ( gb > gl ? ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( gb - gl ) + gl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( gl - gb ) + gb ) ) );
+            uint8_t br = ( bb > bl ? ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( bb - bl ) + bl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( bl - bb ) + bb ) ) );
+            l_point(X0, Y0, LCD_WIDTH, LCD_LENGTH, lui_color_rgb( rr, gr, br ) );
+            
+            // clrBackGround = ::GetPixel( pDC->m_hDC, X0 + XDir, Y0 );
+            rb = 0;//GetRValue( clrBackGround );
+            gb = 0;//GetGValue( clrBackGround );
+            bb = 0;//GetBValue( clrBackGround );
+            grayb = rb * 0.299 + gb * 0.587 + bb * 0.114;
+            
+            rr = ( rb > rl ? ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( rb - rl ) + rl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( rl - rb ) + rb ) ) );
+            gr = ( gb > gl ? ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( gb - gl ) + gl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( gl - gb ) + gb ) ) );
+            br = ( bb > bl ? ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( bb - bl ) + bl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( bl - bb ) + bb ) ) );
+            l_point( X0 + XDir, Y0, LCD_WIDTH, LCD_LENGTH,lui_color_rgb( rr, gr, br ) );
+        }
+        /* Draw the final pixel, which is always exactly intersected by the line
+        and so needs no weighting */
+        l_point(X0, Y0, LCD_WIDTH, LCD_LENGTH,  clrLine );
+        return;
+    }
+    /* It's an X-major line; calculate 16-bit fixed-point fractional part of a
+    pixel that Y advances each time X advances 1 pixel, truncating the
+    result to avoid overrunning the endpoint along the X axis */
+    ErrorAdj = ((unsigned long) DeltaY << 16) / (unsigned long) DeltaX;
+    /* Draw all pixels other than the first and last */
+    while (--DeltaX) {
+        ErrorAccTemp = ErrorAcc;   /* remember currrent accumulated error */
+        ErrorAcc += ErrorAdj;      /* calculate error for next pixel */
+        if (ErrorAcc <= ErrorAccTemp) {
+            /* The error accumulator turned over, so advance the Y coord */
+            Y0++;
+        }
+        X0 += XDir; /* X-major, so always advance X */
+                    /* The IntensityBits most significant bits of ErrorAcc give us the
+                    intensity weighting for this pixel, and the complement of the
+        weighting for the paired pixel */
+        Weighting = ErrorAcc >> 8;
+        // ASSERT( Weighting < 256 );
+        // ASSERT( ( Weighting ^ 255 ) < 256 );
+        
+        // COLORREF clrBackGround = ::GetPixel( pDC->m_hDC, X0, Y0 );
+        uint8_t rb = 0;//GetRValue( clrBackGround );
+        uint8_t gb = 0;//GetGValue( clrBackGround );
+        uint8_t bb = 0;//GetBValue( clrBackGround );
+        double grayb = rb * 0.299 + gb * 0.587 + bb * 0.114;
+        
+        uint8_t rr = ( rb > rl ? ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( rb - rl ) + rl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( rl - rb ) + rb ) ) );
+        uint8_t gr = ( gb > gl ? ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( gb - gl ) + gl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( gl - gb ) + gb ) ) );
+        uint8_t br = ( bb > bl ? ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( bb - bl ) + bl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?Weighting:(Weighting ^ 255)) ) / 255.0 * ( bl - bb ) + bb ) ) );
+        
+        l_point(X0, Y0, LCD_WIDTH, LCD_LENGTH, lui_color_rgb( rr, gr, br ) );
+        
+        // clrBackGround = ::GetPixel( pDC->m_hDC, X0, Y0 + 1 );
+        rb = 0;//GetRValue( clrBackGround );
+        gb = 0;//GetGValue( clrBackGround );
+        bb = 0;//GetBValue( clrBackGround );
+        grayb = rb * 0.299 + gb * 0.587 + bb * 0.114;
+        
+        rr = ( rb > rl ? ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( rb - rl ) + rl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( rl - rb ) + rb ) ) );
+        gr = ( gb > gl ? ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( gb - gl ) + gl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( gl - gb ) + gb ) ) );
+        br = ( bb > bl ? ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( bb - bl ) + bl ) ) : ( ( uint8_t )( ( ( double )( grayl<grayb?(Weighting ^ 255):Weighting) ) / 255.0 * ( bl - bb ) + bb ) ) );
+        
+        l_point( X0, Y0 + 1, LCD_WIDTH, LCD_LENGTH, lui_color_rgb( rr, gr, br ) );
+    }
+    
+    /* Draw the final pixel, which is always exactly intersected by the line
+    and so needs no weighting */
+    l_point(X0, Y0, LCD_WIDTH, LCD_LENGTH, clrLine );
+}
+
+void swap(int *a,int *b)
+{
+    int temp;
+    temp=*a;
+    *a=*b;
+    *b=temp;
+}
+
+int ipart(float x) {
+	return (int)x;
+}
+
+float fpart(float x) {
+	return x - floor(x);
+}
+
+float rfpart(float x) {
+	return 1 - fpart(x);
+}
+
+void xxwu(int x0, int y0, int x1, int y1, uint16_t c) {
+	int steep = abs(y1 - y0) > abs(x1 - x0) ;
+
+	// swap the co-ordinates if slope > 1 or we
+	// draw backwards
+	if (steep) {
+		swap(&x0 , &y0);
+		swap(&x1 , &y1);
+	}
+
+	if (x0 > x1) {
+		swap(&x0 ,&x1);
+		swap(&y0 ,&y1);
+	}
+
+	//compute the slope
+	float dx = x1-x0;
+	float dy = y1-y0;
+	float gradient = dy/dx;
+	if (dx == 0.0) {
+		gradient = 1;
+	}
+
+	int xpxl1 = x0;
+	int xpxl2 = x1;
+	float intersectY = y0;
+
+	// main loop
+	if (steep) {
+		int x;
+		for (x = xpxl1 ; x <=xpxl2 ; x++) {
+			// pixel coverage is determined by fractional
+			// part of y co-ordinate
+			// img->set(ipart(intersectY), x,
+			// 		c * rfpart(intersectY));
+			// img->set(ipart(intersectY)-1, x,
+			// 		c * fpart(intersectY));
+            l_point(ipart(intersectY), x, LCD_WIDTH, LCD_LENGTH, c * rfpart(intersectY) );
+            l_point(ipart(intersectY)-1, x, LCD_WIDTH, LCD_LENGTH, c * fpart(intersectY) );
+            intersectY += gradient;
+            printf("%d-",x);
+		}
+	} else {
+		int x;
+		for (x = xpxl1 ; x <=xpxl2 ; x++) {
+			// pixel coverage is determined by fractional
+			// part of y co-ordinate
+			// img->set(x, ipart(intersectY),
+			// 		c * rfpart(intersectY));
+			// img->set(x, ipart(intersectY)-1,
+			// 		c * fpart(intersectY));
+			intersectY += gradient;
+		}
+	}
+}
+
+void DrawWuCirlce (int x, int y, int r)
+{
+	short x1, y1, x2, y2;
+	float dt = 5;
+
+	for ( float theta= 0; theta< 360; theta += dt )
+	{
+		x1 = (short)( r*cos(theta*3.141593/180.0)+x);
+		y1 = (short)(-r*sin(theta*3.141593/180.0)+y);
+
+		x2 = (short)( r*cos((theta+dt)*3.141593/180.0)+x);
+		y2 = (short)(-r*sin((theta+dt)*3.141593/180.0)+y);
+		
+		DrawWuLine2(x1, y1, x2, y2, 0);
+	}
 }
 
 static uint8_t lui_draw_check_layout(int x, int y, int width, int length) {
