@@ -19,7 +19,11 @@
         "typeinfo": "c",
         "lui_bar.h": "c",
         "stdarg.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "lui_view_group.h": "c",
+        "stdint.h": "c",
+        "lui_view.h": "c",
+        "lui_smaa.h": "c"
     },
     "python.jediEnabled": false
 }

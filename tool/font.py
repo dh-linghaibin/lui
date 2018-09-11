@@ -11,8 +11,10 @@ start,end = (0x4E00, 0x9FA5)
 #     for codepoint in range(int(start),int(end)):
 #         f.write(chr(codepoint))
 
-fn_bin = "font_16" + ".bin"
+fn_bin = "font_16_china" + ".bin"
 f_bin = open(fn_bin, 'wb')
+f_bin.write(struct.pack('<B', 16))#weite size
+f_bin.write(struct.pack('<B', 16))
 
 # fn_txt = "img_lhb" + ".h"
 # f_txt = open(fn_txt, 'w')
@@ -21,12 +23,11 @@ inc = ""
 font = ImageFont.truetype(font='china.ttf', size=16)
 pattern = re.compile(r'.{2}')
 # im = Image.new('1', (64, 32), (1))
-
 # font_s = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 for codepoint in range(int(start),int(end)):
     font_s = chr(codepoint);
     for j in font_s:
-        # print (j,end = "")
+        print (j,end = "")
         im = Image.new("RGBA",(16,16),(255,255,255,0))
         draw = ImageDraw.Draw(im)
         draw.text((-1, -2), j, font=font, fill = 'black')
@@ -44,7 +45,7 @@ for codepoint in range(int(start),int(end)):
                 inc += '0x' + "%x"%im.getpixel((w, h))[3] + ',';
             # print('')
             inc += "\n";
-        # f_txt.write(inc)
+    # f_txt.write(inc)
 # f_txt.close
 f_bin.close()
 
