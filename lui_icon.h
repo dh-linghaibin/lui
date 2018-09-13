@@ -13,15 +13,20 @@ extern "C" {
 #endif
 
 #include "lui_obj.h"
+#include "lui_tick.h"
 
 typedef enum {
     LIT_JPG = 1,
     LIT_PNG = 2,
+    LIT_GIF = 3,
 } lui_icon_type;
 
 typedef struct _lui_icon {
     uint8_t       mesh : 4;
     lui_icon_type type : 4;
+    uint8_t frames;
+    uint8_t frames_now;
+    lui_tick_t * tic;
     char * path;
 } lui_icon;
 

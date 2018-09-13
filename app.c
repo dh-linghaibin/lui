@@ -192,7 +192,9 @@ int main(int argc, char *args[]) {
             SDL_Delay(20);
             tft_update();
         }
+        lui_loop();
         SDL_Delay(20);
+        tft_update();
         lui_tick_loop();
     }
     SDL_DestroyRenderer(renderer);

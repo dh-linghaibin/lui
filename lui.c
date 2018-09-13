@@ -63,7 +63,7 @@ void lui_init(void) {
     lui_icon_set_path(icon6,"tool/switch_close.png.bin");
     lui_obj_add_child(lui_get_root(),icon6);
 
-    lui_obj_t * group = lui_view_group_create(300,50);
+    lui_obj_t * group = lui_view_group_create(50,50);
     lui_view_group_set_size(group,100,100);
     lui_obj_add_child(lui_get_root(),group);
 
@@ -71,9 +71,13 @@ void lui_init(void) {
     lui_icon_set_path(icon_ba,"tool/battery.png.bin");
     lui_obj_add_child(group,icon_ba);
     
-    lui_obj_t * icon7 = lui_create_icon(0,0);
-    lui_icon_set_path(icon7,"tool/close.png.bin");
-    lui_obj_add_child(group,icon7);
+    lui_obj_t * icon7 = lui_create_icon(0,50);
+    lui_icon_set_path(icon7,"tool/dog.gif.bin");
+    lui_obj_add_child(lui_get_root(),icon7);
+
+    lui_obj_t * icon8 = lui_create_icon(0,0);
+    lui_icon_set_path(icon8,"tool/cat.gif.bin");
+    lui_obj_add_child(group,icon8);
 
     // lui_obj_t * list1 = lui_create_list(0,0);
     // lui_obj_set_width(list1,100);
@@ -120,7 +124,7 @@ void lui_init(void) {
     lui_obj_add_child(lui_get_root(),but);
     lui_text_set_color(but->child,lui_color565(red));
 
-    lui_tick_t * tic = lui_tick_create(keyboard,tic_event,1000);
+    // lui_tick_t * tic = lui_tick_create(keyboard,tic_event,1000);
 
     // lui_tick_delet(tic);
 
