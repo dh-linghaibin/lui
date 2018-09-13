@@ -25,6 +25,8 @@ for j in font_s:
     draw = ImageDraw.Draw(im)
     draw.text((0, -10), j, font=font, fill = 'black')
     # im.show()
+    inc = '';
+    inc += "/*-- " + j + " --*/\n";
     for h in range(wh):
         for w in range(we):
             inc += '0x' + "%x"%im.getpixel((w, h))[3] + ',';
