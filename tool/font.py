@@ -49,22 +49,3 @@ for codepoint in range(int(start),int(end)):
 # f_txt.close
 f_bin.close()
 
-# res = []
-# for h in range(16):
-#     tmp = ''
-#     for w in range(16):
-#         r =  im.getpixel((w, h))[0] >> 3
-#         g =  im.getpixel((w, h))[1] >> 2
-#         b =  im.getpixel((w, h))[2] >> 3
-#         px_out = (r << 11) + (g << 5) + b
-#         print ( '0x' + "%x"%im.getpixel((w, h))[3] + ',', end=' ' )
-#         if im.getpixel((w, h))[3] != 0:
-#             tmp += '0'
-#             # print(' ', end='')
-#         else:
-#             tmp += '1'
-#             # print('●', end='')
-#     print('')
-#     res.append(','.join(map(lambda x: '0x' + x, pattern.findall("%016X" % int(tmp, 2)))) + ',')
-# res = ''.join(res)[:-1]
-# print(res)
