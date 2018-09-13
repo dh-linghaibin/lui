@@ -337,24 +337,19 @@ void _lui_obj_even(lui_obj_t * obj, int x, int y, uint8_t flag) {
                 point.x = stack_point.x + obj->layout.point.x;
                 point.y = stack_point.y + obj->layout.point.y;
             }
-            // printf("%d %d -- %d %d -- %d %d\n",x,y,point.x,point.y, point.x+f_layout.size.width,point.y+f_layout.size.length);
-            // if( ( ( x >= (point.x) && x <=  (point.x+f_layout.size.width) )
-            //     && ( y >= (point.y) && x <=  (point.y+f_layout.size.length) ) ) 
-            //     || obj->event_flag == 1 ) {
-                if(obj->event != NULL) {
-                    if( ( ( x >= point.x && x <= (point.x + obj->layout.size.width) )
-                        && ( y >= point.y && y <= (point.y + obj->layout.size.length) ) )
-                        || obj->event_flag == 1 ) {
-                            touch_val.event = obj->event;
-                            touch_val.abs_x = x - point.x;
-                            touch_val.abs_y = y - point.y;
-                            touch_val.rel_x = x;
-                            touch_val.rel_y = y;
-                            touch_val.falg  = flag;
-                            touch_val.obj   = obj;
-                    }
+            if(obj->event != NULL) {
+                if( ( ( x >= point.x && x <= (point.x + obj->layout.size.width) )
+                    && ( y >= point.y && y <= (point.y + obj->layout.size.length) ) )
+                    || obj->event_flag == 1 ) {
+                        touch_val.event = obj->event;
+                        touch_val.abs_x = x - point.x;
+                        touch_val.abs_y = y - point.y;
+                        touch_val.rel_x = x;
+                        touch_val.rel_y = y;
+                        touch_val.falg  = flag;
+                        touch_val.obj   = obj;
                 }
-            // }
+            }
         }
         if(obj->event_flag == 0) {
             _lui_obj_even(obj->child,x,y,flag);
@@ -364,7 +359,7 @@ void _lui_obj_even(lui_obj_t * obj, int x, int y, uint8_t flag) {
 }
 
 void lui_obj_even(int x, int y, uint8_t flag) {
-    if(flag == 1 && touch_val.event != NULL) {
+    if((flag == 0 || flag == 1) && touch_val.event != NULL) {
         touch_val.abs_x = x - (touch_val.rel_x - touch_val.abs_x);
         touch_val.abs_y = y - (touch_val.rel_y - touch_val.abs_y);
         touch_val.rel_x = x;

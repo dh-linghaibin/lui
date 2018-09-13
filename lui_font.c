@@ -22,9 +22,9 @@ lui_font lui_font_get(lui_font_type type, char *utf8) {
                 FILE *file;
                 unsigned long fileLen;
                 if(font_consola_10.type == 0) {
-                    file = fopen("img_.bin", "rb");
+                    file = fopen("file/img_.bin", "rb");
                 } else {
-                    file = fopen("img_.bin", "rb");
+                    file = fopen("file/img_.bin", "rb");
                 }
                 if (!file) {
                     exit(1);

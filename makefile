@@ -1,5 +1,5 @@
 
-SRC = sram.o lui_fxaa.o lui_font.o lui_draw.o lui_obj.o \
+SRC = sram.o lui_tick.o lui_fxaa.o lui_font.o lui_draw.o lui_obj.o \
  lui_bar.o lui_button.o lui_checkbox.o lui_color.o lui_icon.o \
  lui_keyboard.o lui_view_group.o lui_text.o lui.o app.o 
 
@@ -16,6 +16,9 @@ sram.o: sram.c sram.h lui_config.h
 
 lui_font.o: lui_font.c lui_font.h lui_config.h lui_font_mate.h
 	gcc -g -c lui_font.c
+
+lui_tick.o: lui_tick.c lui_tick.h lui_config.h
+	gcc -g -c lui_tick.c
 
 lui_bar.o: lui_bar.c lui_bar.h lui_config.h
 	gcc -g -c lui_bar.c

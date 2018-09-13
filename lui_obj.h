@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef _LUI_OBJjj_H_
-#define _LUI_OBJjj_H_
+#ifndef _LUI_OBJ_H_
+#define _LUI_OBJ_H_
 
 #ifdef __cplusplus
 extern "C" {

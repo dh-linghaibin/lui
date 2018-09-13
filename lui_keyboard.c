@@ -1,9 +1,9 @@
 /*
- * This file is part of the lui_keyboard.c
- *
- *  Copyright (c) : 2018��8��22�� linghaibin
- *      Author: a6735
- */
+* This file is part of the
+*
+* Copyright (c) 2016-2018 linghaibin
+*
+*/
 
 #include "lui_keyboard.h"
 #include "lui_color.h"

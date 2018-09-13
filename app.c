@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include "lui.h"
+#include "lui_tick.h"
 
 #define min(a, b) ( (a) < (b) ? (a) : (b) )
 
@@ -142,8 +143,10 @@ SDL_Event even2;
 uint8_t running = 1 ;
 uint8_t touch_flag = 0;
 static int tick_thread(void *data) {
-    SDL_Delay(1);
-    return 0;
+    while(running) {
+        SDL_Delay(5);
+        lui_tick_inc(1);
+    }
 }
 
 int main(int argc, char *args[]) {
@@ -189,6 +192,7 @@ int main(int argc, char *args[]) {
             SDL_Delay(20);
             tft_update();
         }
+        SDL_Delay(20);
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(texture);

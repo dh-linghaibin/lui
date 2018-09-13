@@ -23,7 +23,9 @@
         "lui_view_group.h": "c",
         "stdint.h": "c",
         "lui_view.h": "c",
-        "lui_smaa.h": "c"
+        "lui_smaa.h": "c",
+        "lui_tick.h": "c",
+        "sram.h": "c"
     },
     "python.jediEnabled": false
 }

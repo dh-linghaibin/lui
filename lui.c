@@ -1,12 +1,8 @@
 
 #include "lui.h"
-#include "material/i_window.h"
-#include "material/desk.h"
-#include "material/img_test.h"
 #include "lui_checkbox.h"
 #include "lui_keyboard.h"
 #include "lui_text.h"
-#include "material/fruit.h"
 #include "lui_icon.h"
 #include "lui_view_group.h"
 
@@ -33,8 +29,41 @@ void bar_b_event(lui_obj_t * obj) {
 }
 
 void lui_init(void) {
-    lui_obj_t * icon = lui_create_icon(0,0,320,240,desk);
+    lui_obj_t * icon = lui_create_icon(0,0);
+    lui_icon_set_path(icon,"tool/desk.bin");
     lui_obj_add_child(lui_get_root(),icon);
+
+    lui_obj_t * icon2 = lui_create_icon(0,0);
+    lui_icon_set_path(icon2,"tool/test.bin");
+    lui_obj_add_child(lui_get_root(),icon2);
+
+    lui_obj_t * icon3 = lui_create_icon(40,10);
+    lui_icon_set_path(icon3,"tool/button4.png.bin");
+    lui_obj_add_child(lui_get_root(),icon3);
+
+    lui_obj_t * icon4 = lui_create_icon(60,10);
+    lui_icon_set_path(icon4,"tool/button4_blue.png.bin");
+    lui_obj_add_child(lui_get_root(),icon4);
+
+    lui_obj_t * icon5 = lui_create_icon(80,0);
+    lui_icon_set_path(icon5,"tool/switch_open.png.bin");
+    lui_obj_add_child(lui_get_root(),icon5);
+    
+    lui_obj_t * icon6 = lui_create_icon(120,0);
+    lui_icon_set_path(icon6,"tool/switch_close.png.bin");
+    lui_obj_add_child(lui_get_root(),icon6);
+
+    lui_obj_t * group = lui_view_group_create(300,50);
+    lui_view_group_set_size(group,100,100);
+    lui_obj_add_child(lui_get_root(),group);
+
+    lui_obj_t * icon_ba = lui_create_icon(40,0);
+    lui_icon_set_path(icon_ba,"tool/battery.png.bin");
+    lui_obj_add_child(group,icon_ba);
+    
+    lui_obj_t * icon7 = lui_create_icon(0,0);
+    lui_icon_set_path(icon7,"tool/close.png.bin");
+    lui_obj_add_child(group,icon7);
 
     // lui_obj_t * list1 = lui_create_list(0,0);
     // lui_obj_set_width(list1,100);
@@ -73,13 +102,13 @@ void lui_init(void) {
     // lui_obj_add_child(lui_get_root(),xl2);
     // lui_list_set_backcolor(xl2,lui_color565(gainsboro));
 
-    // lui_obj_t * keyboard = lui_create_keyboard(10,150);
-    // lui_obj_add_child(lui_get_root(),keyboard);
+    lui_obj_t * keyboard = lui_create_keyboard(10,150);
+    lui_obj_add_child(lui_get_root(),keyboard);
 
-    // lui_obj_t * but = lui_create_button(100,20);
-    // lui_button_set_text(but,"ac");
-    // lui_obj_add_child(lui_get_root(),but);
-    // lui_text_set_color(but->child,lui_color565(red));
+    lui_obj_t * but = lui_create_button(100,120);
+    lui_button_set_text(but,"Enter");
+    lui_obj_add_child(lui_get_root(),but);
+    lui_text_set_color(but->child,lui_color565(red));
 
     // xshow = lui_create_text(0,0);
     // lui_obj_add_child(lui_get_root(),xshow);

@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 
-#define SRAM_SIZE (9900000)
+#define SRAM_SIZE (100000)
 
 #define HeapBlockSIZE (100)
 

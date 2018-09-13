@@ -15,16 +15,18 @@ extern "C" {
 #include "lui_obj.h"
 
 typedef enum {
-    LIT_BMP,
-    LIT_PNG,
+    LIT_JPG = 1,
+    LIT_PNG = 2,
 } lui_icon_type;
 
-typedef struct _licon {
-    lui_icon_type type;
-    const unsigned int * material;
-} licon;
+typedef struct _lui_icon {
+    uint8_t       mesh : 4;
+    lui_icon_type type : 4;
+    char * path;
+} lui_icon;
 
-lui_obj_t *lui_create_icon(int x, int y, int width, int length, const unsigned int * material);
+lui_obj_t *lui_create_icon(int x, int y);
+void lui_icon_set_path(lui_obj_t * obj, char * path);
 
 #ifdef __cplusplus
 }
