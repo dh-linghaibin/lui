@@ -33,15 +33,17 @@ static void lui_view_group_design (struct _lui_obj_t * obj, lui_point_t *point) 
                     obj->layout.size.length,
                     0,list->back_color);
 }
-int i = 0;
+int c_x = 0;
+int c_y = 0;
 static void lui_view_group_event(lui_touch_val_t *val) {
     lui_view_group * list = val->obj->val;
     if(val->falg == 2) {
-        i = val->abs_y;
+        c_x = val->abs_x;
+        c_y = val->abs_y;
     }
     if(val->falg == 1) {
-       val->obj->layout.point.x = val->abs_x;
-       val->obj->layout.point.y = val->abs_y;
+       val->obj->layout.point.x = val->rel_x-c_x;
+       val->obj->layout.point.y = val->rel_y-c_y;
     }
 }
 

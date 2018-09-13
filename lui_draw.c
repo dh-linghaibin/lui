@@ -868,13 +868,6 @@ void lui_draw_jpg(int x, int y, int width, int length, uint8_t * material) {
                 ptr += (f_layout.point.y-y)*width;
                 y = f_layout.point.y;
             }
-
-            uint16_t aaa = 0;
-            if(maxX1 > l_x) {
-                aaa = maxX1-l_x;
-                maxX1 = l_x;
-            }
-
             if(maxY1 > l_y) {
                 maxY1 = l_y;
             }
@@ -912,9 +905,6 @@ void lui_draw_jpg(int x, int y, int width, int length, uint8_t * material) {
                 if(x < cache.coordinate.point.x) {
                     ptr += (cache.coordinate.point.x-x) * 2;
                 }
-                if(aaa > 0) {
-                    ptr += aaa*2;
-                }
             }
         }
     }
@@ -947,12 +937,6 @@ void lui_draw_png(int x, int y, int width, int length, uint8_t * material) {
                 y = f_layout.point.y;
             }
 
-            uint16_t aaa = 0;
-            if(maxX1 > l_x) {
-                aaa = maxX1-l_x;
-                maxX1 = l_x;
-            }
-
             if(maxY1 > l_y) {
                 maxY1 = l_y;
             }
@@ -969,8 +953,6 @@ void lui_draw_png(int x, int y, int width, int length, uint8_t * material) {
             if(maxY1 < maxY2) {
                 y2 = cache.coordinate.size.length-(maxY2-maxY1);
             }
-
-
             if(y < cache.coordinate.point.y) {
                 ptr += (cache.coordinate.point.y-y)*width;
             }
@@ -992,9 +974,6 @@ void lui_draw_png(int x, int y, int width, int length, uint8_t * material) {
                 }
                 if(x < cache.coordinate.point.x) {
                     ptr += (cache.coordinate.point.x-x) * 3;
-                }
-                if(aaa > 0) {
-                    ptr += aaa*3;
                 }
             }
         }

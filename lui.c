@@ -5,6 +5,7 @@
 #include "lui_text.h"
 #include "lui_icon.h"
 #include "lui_view_group.h"
+#include "lui_tick.h"
 
 lui_obj_t *xshow;
 
@@ -26,6 +27,15 @@ void bar_b_event(lui_obj_t * obj) {
     lui_bar * bar = obj->val;
     c_b = bar->val*2.55;
     lui_text_set_color(xshow,lui_color_rgb( c_r,c_g,c_b));
+}
+
+int i = 0;
+void tic_event(lui_tick_t * tick) {
+    printf("time over %d\n",i);
+    i++;
+    if(i == 5) {
+        lui_tick_delet(tick);
+    }
 }
 
 void lui_init(void) {
@@ -109,6 +119,10 @@ void lui_init(void) {
     lui_button_set_text(but,"Enter");
     lui_obj_add_child(lui_get_root(),but);
     lui_text_set_color(but->child,lui_color565(red));
+
+    lui_tick_t * tic = lui_tick_create(keyboard,tic_event,1000);
+
+    // lui_tick_delet(tic);
 
     // xshow = lui_create_text(0,0);
     // lui_obj_add_child(lui_get_root(),xshow);

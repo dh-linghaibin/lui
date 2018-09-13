@@ -144,7 +144,7 @@ uint8_t running = 1 ;
 uint8_t touch_flag = 0;
 static int tick_thread(void *data) {
     while(running) {
-        SDL_Delay(5);
+        SDL_Delay(1);
         lui_tick_inc(1);
     }
 }
@@ -153,9 +153,9 @@ int main(int argc, char *args[]) {
     tft_init();
     lui_init();
     lui_loop();
-    SDL_CreateThread(tick_thread, "tick", NULL);
     tft_update();
     SDL_Delay(10);
+    SDL_CreateThread(tick_thread, "tick", NULL);
     while(running) {
         SDL_Event event;
         while ( SDL_PollEvent( &event ) ) {
@@ -193,6 +193,7 @@ int main(int argc, char *args[]) {
             tft_update();
         }
         SDL_Delay(20);
+        lui_tick_loop();
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(texture);
