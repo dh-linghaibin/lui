@@ -9,7 +9,11 @@ we = 20
 wh = 20
 type = 1;
 fn_txt = "china_tft_32" + ".h"
+fn_base = "china_tft_32"
 f_txt = open(fn_txt, 'w')
+inc = "#include <stdint.h> \r\n"
+f_txt.write(inc)
+f_txt.write("const uint8_t " + fn_base + "[] = {")
 inc = ""
 
 f_txt.write('0x' + "%x"%type + ',') #type
@@ -32,5 +36,6 @@ for j in font_s:
             inc += '0x' + "%x"%im.getpixel((w, h))[3] + ',';
         inc += "\n";
     f_txt.write(inc)
+f_txt.write("};  /*Arrray end*/")
 f_txt.close
 

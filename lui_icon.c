@@ -14,10 +14,11 @@ static void icon_tic_event(lui_tick_t * tick);
 
 lui_obj_t *lui_create_icon(int x, int y) {
     lui_icon * icon = lui_malloc(sizeof(lui_icon));
-    icon->path = NULL;
+    icon->path_name = NULL;
     icon->mesh = 0;
     icon->frames = 0;
     icon->frames_now = 0;
+    icon->path = LIP_EXTERNAL;
     icon->tic = NULL;
     lui_obj_t * obj = lui_create_obj(x,y,0,0,icon,lui_icon_design);
     lui_obj_set_event(obj,lui_icon_event);
@@ -33,14 +34,17 @@ static void icon_tic_event(lui_tick_t * tick) {
     }
 }
 
-void lui_icon_set_path(lui_obj_t * obj, char * path) {
+void lui_icon_set_path(lui_obj_t * obj, lui_icon_path path, char * path_name) {
+    if(obj == NULL) return;
+    if(path_name == NULL) return;
     lui_icon * icon = obj->val;
-    if(path != NULL) {
-        icon->path = path;
+    icon->path = path;
+    icon->path_name = path_name;
+    if(path == LIP_EXTERNAL) {
         FILE *file;
-        file = fopen(icon->path, "rb");
+        file = fopen(icon->path_name, "rb");
         if (!file) {
-            icon->path = NULL;
+            icon->path_name = NULL;
             return;
         }
         unsigned char size[6]= {0,0,};
@@ -53,34 +57,53 @@ void lui_icon_set_path(lui_obj_t * obj, char * path) {
             icon->tic = lui_tick_create(obj,icon_tic_event,100);
         }
         fclose(file);
+    } else {
+        icon->type = path_name[0];
+        lui_obj_set_width(obj,(uint16_t)( path_name[2]<<8)+path_name[1]);
+        lui_obj_set_length(obj,(uint16_t)( path_name[4]<<8)+path_name[3]);
+        if(icon->type == LIT_GIF) {
+            icon->frames = path_name[5];
+            icon->tic = lui_tick_create(obj,icon_tic_event,100);
+        }
     }
 }
 
 static void lui_icon_design (struct _lui_obj_t * obj, lui_point_t *point) {
     lui_icon * icon = obj->val;
-    if(icon->path != NULL) {
-        FILE *file;
-        file = fopen(icon->path, "rb");
-        if (!file) {
-            icon->path = NULL;
-            return;
+    if(icon->path_name != NULL) {
+        uint8_t * material = NULL;
+        if(icon->path ==LIP_EXTERNAL) {
+            FILE *file;
+            file = fopen(icon->path_name, "rb");
+            if (!file) {
+                icon->path_name = NULL;
+                return;
+            }
+            unsigned long fileLen;
+            fileLen = obj->layout.size.width*obj->layout.size.length;
+            if(icon->type == LIT_JPG) {
+                fseek(file, 5, SEEK_SET);
+                fileLen *= 2;
+            } else if(icon->type == LIT_PNG) {
+                fseek(file, 5, SEEK_SET);
+                fileLen *= 3;
+            } else if(icon->type == LIT_GIF) {
+                fileLen *= 3;
+                fseek(file, 6+fileLen*icon->frames_now, SEEK_SET);
+            }
+            material = (uint8_t *)malloc(fileLen);
+            fread(material, 1, fileLen, file);
+            fclose(file);
+        } else {
+            if(icon->type == LIT_JPG) {
+                material = (uint8_t *) icon->path_name + 3;
+            } else if(icon->type == LIT_PNG) {
+                material = (uint8_t *) icon->path_name + 3;
+            } else if(icon->type == LIT_GIF) {
+                material = (uint8_t *) icon->path_name + 3 + \
+                (obj->layout.size.width*obj->layout.size.length*icon->frames_now);
+            }
         }
-        unsigned long fileLen;
-        fileLen = obj->layout.size.width*obj->layout.size.length;
-        if(icon->type == LIT_JPG) {
-            fseek(file, 5, SEEK_SET);
-            fileLen *= 2;
-        } else if(icon->type == LIT_PNG) {
-            fseek(file, 5, SEEK_SET);
-            fileLen *= 3;
-        } else if(icon->type == LIT_GIF) {
-            fileLen *= 3;
-            fseek(file, 6+fileLen*icon->frames_now, SEEK_SET);
-            // printf("%d-",fileLen);
-        }
-        uint8_t * material = (uint8_t *)malloc(fileLen);
-        fread(material, 1, fileLen, file);
-        fclose(file);
         if(icon->type == LIT_JPG) {
             lui_draw_jpg(point->x,point->y,obj->layout.size.width,obj->layout.size.length,material);
         } else {
@@ -89,7 +112,10 @@ static void lui_icon_design (struct _lui_obj_t * obj, lui_point_t *point) {
         if(icon->mesh == 1) {
             lui_draw_frame(point->x,point->y,obj->layout.size.width,obj->layout.size.length,200,0x34ff);
         }
-        free(material);
+        if(icon->path ==LIP_EXTERNAL) {
+            free(material);
+        }
+        cg_antialiased_line(0,0,100,100,0xffff);
     }
 }
 

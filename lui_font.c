@@ -8,15 +8,16 @@
 #include "lui_font.h"
 #include "lui_font_mate.h"
 
-//TODO: 凌海滨
-//FIXME: 测试
+// TODO:
+// ! 忘记了啊
+// * 是这样的
+// ? 颜色
 lui_font lui_font_get(lui_font_type type, char *utf8) {
     switch(type) {
         case LFT_Y_CONSOLA_10 : {
             lui_font font_consola_10;
-            // font_consola_10.wight = 16;
-            // font_consola_10.length = 16;
             uint16_t adr = 0;
+            font_consola_10.path = LFP_EXTERNAL;
             font_consola_10.type = lui_font_utf8_to_unicode(&adr, utf8);
             {
                 FILE *file;
@@ -43,8 +44,17 @@ lui_font lui_font_get(lui_font_type type, char *utf8) {
                 fread(font_consola_10.font, 1, fileLen+1, file);
                 fclose(file);
             }
-
             return font_consola_10;
+        } break;
+        case LFT_Y_CONSOLA_30 : {
+            lui_font font_consola_30;
+            uint16_t adr           = 0;
+            font_consola_30.path   = LFP_INTERNAL;
+            font_consola_30.type   = lui_font_utf8_to_unicode(&adr, utf8);
+            font_consola_30.wight  = china_tft_32[1];
+            font_consola_30.length = china_tft_32[2];
+            font_consola_30.font   = (uint8_t *) 3+(font_consola_30.wight*font_consola_30.length*adr);
+            return font_consola_30;
         } break;
     }
 }

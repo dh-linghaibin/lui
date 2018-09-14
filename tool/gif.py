@@ -144,7 +144,7 @@ def processImage(path):
  
  
 def main():
-    processImage('cat.gif')
+    processImage('monthing.gif')
     
  
 if __name__ == "__main__":

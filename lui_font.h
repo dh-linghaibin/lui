@@ -19,6 +19,7 @@ extern "C" {
 
 typedef enum {
     LFT_Y_CONSOLA_10,
+    LFT_Y_CONSOLA_30,
 } lui_font_type;
 
 typedef enum {

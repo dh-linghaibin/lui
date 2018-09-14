@@ -56,7 +56,9 @@ static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
             }
         }
         lui_draw_font(ax, ay,font.wight, font.length,text->color,font.font);
-        lui_free(font.font);
+        if(font.path == LFP_EXTERNAL) {
+            lui_free(font.font);
+        }
         if(font.type == 0) {
             tex++;
         } else {
