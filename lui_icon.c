@@ -115,7 +115,7 @@ static void lui_icon_design (struct _lui_obj_t * obj, lui_point_t *point) {
         if(icon->path ==LIP_EXTERNAL) {
             free(material);
         }
-        cg_antialiased_line(0,0,100,100,0xffff);
+        cg_antialiased_line(0,0,80,100,0x00);
     }
 }
 

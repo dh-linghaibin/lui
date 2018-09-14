@@ -26,12 +26,13 @@ static void l_point(int s_x, int s_y ,int m_x, int m_y, uint16_t color) {
     }
 }
 
-static uint16_t l_point_get(int s_x, int s_y ,int m_x, int m_y) {
+static void l_point_alpha(int s_x, int s_y ,int m_x, int m_y, uint16_t color,uint8_t alpha) {
     if( ( s_x  >= cache.coordinate.point.x && s_x  < m_x ) &&
     (  s_y >= cache.coordinate.point.y && s_y < m_y ) ) {
         int xx = (s_x-cache.coordinate.point.x);
         int yy = (s_y-cache.coordinate.point.y);
-        return cache.array[yy*cache.coordinate.size.width+xx];
+        int pos = yy*cache.coordinate.size.width+xx;
+        cache.array[pos] = lui_alpha_blend(cache.array[pos],color,alpha);
     }
 }
 
@@ -74,82 +75,86 @@ static uint8_t lui_draw_check_layout(int x, int y, int width, int length) {
     return 0;
 }
 
+int Sgn(float x)
+{
+if(x>0)
+return 1;
+else
+return -1;
+}
+
 void cg_antialiased_line(int x1,int y1,int x2,int y2,uint16_t crColor)  
 {  
     int d, x, y, ax, ay, sx, sy, dx, dy, fx, fy, bk;  
       
-    dx = x2-x1;  fx=abs(dx);  ax = fx<<1;  sx = SGN(dx);  
-    dy = y2-y1;  fy=abs(dy);  ay = fy<<1;  sy = SGN(dy);  
+    dx = x2-x1;  fx=abs(dx);  ax = fx<<1;  sx = Sgn(dx);
+    dy = y2-y1;  fy=abs(dy);  ay = fy<<1;  sy = Sgn(dy);
       
     x = x1;  
     y = y1;  
   
     //// +    
     int incrE,incrNE;         
-    double invDenom=1.0/(2.0*sqrt(1.0*dx*dx+dy*dy));  
-    double temp=0;  
-    double temp2=0;  
+    // double invDenom=20.0/(2.0*sqrt(1.0*dx*dx+dy*dy));  
+    // double temp=0;  
+    // double temp2=0;  
     //// +  
   
     if (ax>ay) {     /* x dominant */  
-        d = ay-fx;  
-        /// +  
-        int two_v_dx=0;  
-        incrE=(dy<<1);  
-        incrNE=((dy-dx)<<2);  
-        double two_dx_invDenom=2.0*dx*invDenom;  
-        /// +  
-        for (;;) {  
-            /// +  
-            temp=two_v_dx*invDenom;  
-            temp2=sx>0?temp:-temp;  
-            // bk=getpixel(x,y);putpixel(x,y,LERP_COLOR(crColor,bk,WCG_FILTER(temp)));  
-            // bk=getpixel(x,y+sy);putpixel(x,y+sy,LERP_COLOR(crColor,bk,WCG_FILTER(two_dx_invDenom-temp2)));  
-            // bk=getpixel(x,y-sy);putpixel(x,y-sy,LERP_COLOR(crColor,bk,WCG_FILTER(two_dx_invDenom+temp2)));  
-  
-            /// +  
-            if (x==x2) return;  
-            if (d>=0) {  
-                two_v_dx=d-fx;   /// +  
-                y += sy;  
-                d -= ax;                  
-            }  
-            else  
-                two_v_dx=d+fx;   /// +  
-            x += sx;  
-            d += ay;  
+        // d = ay-fx;  
+        // /// +  
+        // int two_v_dx=0;  
+        // incrE=(dy<<1);  
+        // incrNE=((dy-dx)<<2);  
+        // double two_dx_invDenom=2.0*dx*invDenom;  
+        // /// +  
+        // for (;;) {  
+        //     /// +  
+        //     temp=two_v_dx*invDenom;  
+        //     temp2=sx>0?temp:-temp;  
+        //     // bk=getpixel(x,y);putpixel(x,y,LERP_COLOR(crColor,bk,WCG_FILTER(temp)));  
+        //     // bk=getpixel(x,y+sy);putpixel(x,y+sy,LERP_COLOR(crColor,bk,WCG_FILTER(two_dx_invDenom-temp2)));  
+        //     // bk=getpixel(x,y-sy);putpixel(x,y-sy,LERP_COLOR(crColor,bk,WCG_FILTER(two_dx_invDenom+temp2)));  
+        //     /// +  
+        //     if (x==x2) return;
+        //     if (d>=0) {  
+        //         two_v_dx=d-fx;   /// +
+        //         y += sy;  
+        //         d -= ax;
+        //     }
+        //     else
+        //         two_v_dx=d+fx;   /// +
+        //     x += sx;
+        //     d += ay;
               
-        }  
+        // }  
     }  
-    else {          /* y dominant */  
-        d = ax-fy;  
+    else {          /* y dominant */
+        d = ax-fy;
         /// +  
-        int two_v_dy=0;  
-        incrE=(dx<<1);  
-        incrNE=((dx-dy)<<1);  
-        double two_dy_invDenom=2.0*dy*invDenom;  
-        /// +  
-        for (;;) {  
+        int two_v_dy=0;
+        // incrE=(dx<<1);
+        // incrNE=((dx-dy)<<1);
+        // double two_dy_invDenom=300*dy*invDenom;
+        /// +
+        for (;;) {
             /// +  
-            temp=two_v_dy*invDenom;  
-            temp2=sy>0?temp:-temp;  
-            // bk=getpixel(x,y);putpixel(x,y,LERP_COLOR(crColor,bk,WCG_FILTER(temp)));  
-            // bk=getpixel(x+sx,y);putpixel(x+sx,y,LERP_COLOR(crColor,bk,WCG_FILTER(two_dy_invDenom-temp2)));  
-            // bk=getpixel(x-sx,y);putpixel(x-sx,y,LERP_COLOR(crColor,bk,WCG_FILTER(two_dy_invDenom+temp2)));  
-  
+            // temp=two_v_dy*invDenom;
+            // temp2=sy>0?temp:-temp;
+            l_point_alpha(x,y,800,480,crColor,0);
+            // l_point_alpha(x+sx,y,800,480,crColor,two_dy_invDenom-temp2);
+            // l_point_alpha(x-sx,y,800,480,crColor,two_dy_invDenom-temp2);
             /// +  
-            if (y==y2) return;  
-            if (d>=0) {  
-                two_v_dy=d-fy;  /// +  
-                x += sx;  
-                d -= ay;  
-                  
-            }  
-            else  
-                two_v_dy=d+fy;   /// +  
-            y += sy;  
-            d += ax;          
-              
+            if (y==y2) return;
+            if (d>=0) {
+                two_v_dy=d-fy;  /// +
+                x += sx;
+                d -= ay;
+            }
+            else
+            two_v_dy=d+fy;   /// +
+            y += sy;
+            d += ax;
         }
     }
 }

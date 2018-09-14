@@ -25,7 +25,8 @@
         "lui_view.h": "c",
         "lui_smaa.h": "c",
         "lui_tick.h": "c",
-        "sram.h": "c"
+        "sram.h": "c",
+        "cmath": "c"
     },
     "python.jediEnabled": false
 }
