@@ -26,7 +26,10 @@
         "lui_smaa.h": "c",
         "lui_tick.h": "c",
         "sram.h": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "desk_jpg.h": "c",
+        "consola_font_10.h": "c",
+        "consola_font_22.h": "c"
     },
     "python.jediEnabled": false
 }

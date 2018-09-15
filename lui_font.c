@@ -7,6 +7,7 @@
 
 #include "lui_font.h"
 #include "lui_font_mate.h"
+#include "sram.h"
 
 // TODO:
 // ! 忘记了啊
@@ -51,9 +52,9 @@ lui_font lui_font_get(lui_font_type type, char *utf8) {
             uint16_t adr           = 0;
             font_consola_30.path   = LFP_INTERNAL;
             font_consola_30.type   = lui_font_utf8_to_unicode(&adr, utf8);
-            font_consola_30.wight  = china_tft_32[1];
-            font_consola_30.length = china_tft_32[2];
-            font_consola_30.font   = (uint8_t *) 3+(font_consola_30.wight*font_consola_30.length*adr);
+            font_consola_30.wight  = (uint16_t)( ( consola_font_22[2]<<8) | consola_font_22[1] );
+            font_consola_30.length = (uint16_t)( ( consola_font_22[4]<<8) | consola_font_22[3] );
+            font_consola_30.font   = (uint8_t *)consola_font_22 + 5 + (font_consola_30.wight*font_consola_30.length*adr);
             return font_consola_30;
         } break;
     }

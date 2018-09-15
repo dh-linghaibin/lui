@@ -6,7 +6,6 @@
  */
 
 #include "lui_draw.h"
-#include "lui_font.h"
 #include <math.h>
 
 typedef struct _lcache {
@@ -494,12 +493,6 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length, uint16_t color,
                 y = f_layout.point.y;
             }
 
-            uint16_t aaa = 0;
-            if(maxX1 > l_x) {
-                aaa = maxX1-l_x;
-                maxX1 = l_x;
-            }
-
             if(maxY1 > l_y) {
                 maxY1 = l_y;
             }
@@ -540,9 +533,6 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length, uint16_t color,
                 if(x < cache.coordinate.point.x) {
                     ptr += (cache.coordinate.point.x-x);
                 }
-                if(aaa > 0) {
-                    ptr += aaa;
-                }
             }
         }
     }
@@ -562,11 +552,11 @@ void lui_draw_jpg(int x, int y, int width, int length, uint8_t * material) {
         if (!(maxX1 < cache.coordinate.point.x || x > maxX2 || maxY1 < cache.coordinate.point.y || y > maxY2)) {
             int x1 = 0; int y1 = 0; int x2 = cache.coordinate.size.width; int y2 = cache.coordinate.size.length;
 
-            uint16_t bbb = 0;
+            uint16_t deviation_y = 0;
             uint32_t ptr = 0;
             if(f_layout.point.x > x) {
                 ptr += (f_layout.point.x-x);
-                bbb = ptr;
+                deviation_y = ptr;
                 x = f_layout.point.x;
             }
 
@@ -604,7 +594,7 @@ void lui_draw_jpg(int x, int y, int width, int length, uint8_t * material) {
                     cache.array[y_i+x_j] = (uint16_t)( material[ptr+1]<<8)+material[ptr];
                     ptr += 2;
                 }
-                ptr += bbb*2;
+                ptr += deviation_y*2;
                 if((x+width) > maxX2) {
                     ptr += ( (x+width) - maxX2) * 2;
                 }
@@ -630,11 +620,11 @@ void lui_draw_png(int x, int y, int width, int length, uint8_t * material) {
         if (!(maxX1 < cache.coordinate.point.x || x > maxX2 || maxY1 < cache.coordinate.point.y || y > maxY2)) {
             int x1 = 0; int y1 = 0; int x2 = cache.coordinate.size.width; int y2 = cache.coordinate.size.length;
 
-            uint16_t bbb = 0;
+            uint16_t deviation_y = 0;
             uint16_t ptr = 0;
             if(f_layout.point.x > x) {
                 ptr += (f_layout.point.x-x);
-                bbb = ptr;
+                deviation_y = ptr;
                 x = f_layout.point.x;
             }
 
@@ -674,7 +664,7 @@ void lui_draw_png(int x, int y, int width, int length, uint8_t * material) {
                     }
                     ptr += 3;
                 }
-                ptr += bbb*3;
+                ptr += deviation_y*3;
                 if((x+width) > maxX2) {
                     ptr += ( (x+width) - maxX2) * 3;
                 }

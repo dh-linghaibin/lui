@@ -8,7 +8,6 @@
 #include "lui_button.h"
 #include "lui_color.h"
 #include "lui_draw.h"
-#include "lui_font.h"
 #include "lui_text.h"
 
 static void lui_button_design (struct _lui_obj_t * obj, lui_point_t *point);
@@ -30,14 +29,27 @@ lui_obj_t * lui_create_button(int x,int y) {
 }
 
 void lui_button_set_text(lui_obj_t * obj, char * tex) {
-    // lui_button * but = obj->val;
+    lui_button * but = obj->val;
     lui_text_set_text(obj->child,tex);
     int tex_size = 0;
     lui_text * _text = obj->child->val;
-    lui_font font = lui_font_get(_text->type,_text->tex);
     uint16_t adr = 0;
+    uint16_t wight = 0;
+    uint16_t length = 0;
+    if(_text->path == LTP_EXTERNAL) {
+        FILE *file;
+        file = fopen(_text->path_name, "rb");
+        unsigned char size[2]= {0,0};
+        fread(size, 1, 2, file);
+        uint16_t wight = 7;//size[0];
+        uint16_t length = 9;//size[1];
+        fclose(file);
+    } else {
+        wight  = (uint16_t)( ( _text->path_name[2]<<8) | _text->path_name[1] );
+        length = (uint16_t)( ( _text->path_name[4]<<8) | _text->path_name[3] );
+    }
     while(*tex) {
-        uint8_t type = lui_font_utf8_to_unicode(&adr,tex);
+        uint8_t type = lui_text_utf8_to_unicode(&adr,tex);
         if(type == 0) {
             tex++;
         } else {
@@ -45,8 +57,8 @@ void lui_button_set_text(lui_obj_t * obj, char * tex) {
         }
         tex_size++;
     }
-    int _x = (obj->layout.size.width/2) - ((font.wight*tex_size)/2) - 1;
-    int _y = (obj->layout.size.length/2) - (font.length/2);
+    int _x = (obj->layout.size.width/2) - ((wight*tex_size)/2) - 1;
+    int _y = (obj->layout.size.length/2) - (length/2);
     lui_obj_set_x(obj->child,_x);
     lui_obj_set_y(obj->child,_y);
 }
