@@ -158,7 +158,7 @@ int main(int argc, char *args[]) {
     SDL_CreateThread(tick_thread, "tick", NULL);
     while(running) {
         SDL_Event event;
-        while ( SDL_PollEvent( &event ) ) {
+        if ( SDL_PollEvent( &event ) ) {
             switch( event.type ) {
                 case SDL_QUIT: {
                     running = 0;
@@ -189,11 +189,11 @@ int main(int argc, char *args[]) {
                     }
                 } break;
             }
-            SDL_Delay(20);
-            tft_update();
+            // SDL_Delay(10);
+            // tft_update();
         }
         lui_loop();
-        SDL_Delay(20);
+        SDL_Delay(10);
         tft_update();
         lui_tick_loop();
     }

@@ -7,7 +7,6 @@
 #include "lui_text.h"
 #include "lui_color.h"
 #include "lui_draw.h"
-// #include "tool/consola_font_22.h"
 #include "tool/consola_font_10.h"
 
 // static lui_text default_font = {
@@ -23,7 +22,7 @@ lui_obj_t * lui_create_text(int x,int y) {
     text->color = 0x00;
     text->path = LTP_INTERNAL;
     text->path_name = consola_font_10;
-    lui_obj_t * obj = lui_create_obj(x,y,50,20,text,lui_text_design);
+    lui_obj_t * obj = lui_create_obj(x,y,50,50,text,lui_text_design);
     lui_obj_set_event(obj,NULL);
     return obj;
 }
@@ -61,21 +60,27 @@ static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
         uint16_t length = 0;
         uint8_t type = lui_text_utf8_to_unicode(&adr, tex);
         if(text->path == LTP_EXTERNAL) {
-            FILE *file;
+            FILE *file = NULL;
             unsigned long fileLen;
             file = fopen(text->path_name, "rb");
-            unsigned char size[2]= {0,0};
-            fread(size, 1, 2, file);
-            uint16_t wight = 7;//size[0];
-            uint16_t length = 9;//size[1];
+            if(file == NULL) {
+                return;
+            }
+            unsigned char r_size[5]= {0,0};
+            fread(r_size, 1, 5, file);
+            wight = (uint16_t)( ( r_size[2]<<8) | r_size[1] );
+            length = (uint16_t)( ( r_size[4]<<8) | r_size[3] );
             fileLen= wight * length;
-            fseek(file, fileLen*adr, SEEK_SET);
-            font=(uint8_t *)lui_malloc(fileLen+1);
+            if(type == 1) {
+                adr += 95;
+            }
+            fseek(file, 5+fileLen*adr, SEEK_SET);
+            font=(uint8_t *)lui_malloc(fileLen);
             if (font == NULL) {
                 fclose(file);
-                exit(1);
+                return;
             }
-            fread(font, 1, fileLen+1, file);
+            fread(font, 1, fileLen, file);
             fclose(file);
         } else {
             wight  = (uint16_t)( ( text->path_name[2]<<8) | text->path_name[1] );

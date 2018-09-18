@@ -3,8 +3,17 @@ import re
 import sys, getopt, os.path
 import codecs
 import struct
+import sys
+# from PyQt5 import QtCore, QtWidgets
 
-name = 'desk.jpg'
+# app = QtWidgets.QApplication(sys.argv)
+# widget = QtWidgets.QWidget()
+# widget.resize(400, 100)
+# widget.setWindowTitle("This is a demo for PyQt Widget.")
+# widget.show()
+# exit(app.exec_())
+
+name = 'kjh.jpg'
 
 im=Image.open(name)
 

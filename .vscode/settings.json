@@ -29,7 +29,8 @@
         "cmath": "c",
         "desk_jpg.h": "c",
         "consola_font_10.h": "c",
-        "consola_font_22.h": "c"
+        "consola_font_22.h": "c",
+        "kjh_jpg.h": "c"
     },
     "python.jediEnabled": false
 }

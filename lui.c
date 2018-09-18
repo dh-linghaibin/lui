@@ -8,6 +8,7 @@
 #include "lui_tick.h"
 #include "tool/desk_jpg.h"
 #include "tool/consola_font_22.h"
+#include "tool/kjh_jpg.h"
 
 lui_obj_t *xshow;
 
@@ -101,6 +102,15 @@ void lui_init(void) {
     lui_text_set_font(tex2, LFP_INTERNAL, consola_font_22);
     lui_text_set_text(tex2,"LING");
     lui_obj_add_child(group,tex2);
+
+    lui_obj_t * group2 = lui_view_group_create(0,0);
+    lui_view_group_set_size(group2,100,50);
+    lui_obj_add_child(lui_get_root(),group2);
+
+    lui_obj_t * tex3 = lui_create_text(0,0);
+    lui_text_set_font(tex3, LFP_EXTERNAL, "tool/china_16.bin");
+    lui_text_set_text(tex3,"窗口1-测试");
+    lui_obj_add_child(group2,tex3);
 }
 
 void lui_loop(void) {

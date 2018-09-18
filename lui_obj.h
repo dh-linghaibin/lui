@@ -28,7 +28,7 @@ typedef struct _lui_size_t {
     uint16_t width;
 } lui_size_t;
 
-typedef struct _lui_layout_t {  
+typedef struct _lui_layout_t {
     lui_point_t point;
     lui_size_t  size;
 } lui_layout_t;

@@ -4,11 +4,11 @@ import sys, getopt, os.path
 import codecs
 import struct
 
-name = "consola_font_10"
+name = "consola_font_15"
 
 # 字符 0 -3 7 x 9
-we = 6
-wh = 8
+we = 9
+wh = 12
 type = 1;
 fn_txt = name + ".h"
 f_txt = open(fn_txt, 'w')
@@ -21,7 +21,7 @@ f_txt.write('0x' + "%x"%type + ',') #type
 f_txt.write('0x' + "%x"%(we & 0x00ff) + ',' + '0x' + "%x"%(we >> 8) + ',')#weite size
 f_txt.write('0x' + "%x"%(wh & 0x00ff) + ',' + '0x' + "%x"%(wh >> 8) + ',')
 
-font = ImageFont.truetype(font='consola.ttf', size=10)
+font = ImageFont.truetype(font='consola.ttf', size=15)
 font_s = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 # font_s = "8"
 for j in font_s:
