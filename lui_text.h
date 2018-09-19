@@ -24,13 +24,13 @@ typedef enum {
     LTP_CHINA,
 } lui_text_type;
 
-typedef struct _lui_text {
+typedef struct _lui_text_t {
     char * tex;
     uint16_t color;
     lui_text_type type : 4;
     lui_text_path path : 4;
     char * path_name;
-} lui_text;
+} lui_text_t;
 
 lui_obj_t * lui_create_text(int x,int y);
 void lui_text_set_font(lui_obj_t * obj, lui_text_path path, char * path_name);

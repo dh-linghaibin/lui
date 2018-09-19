@@ -1,50 +1,41 @@
 /*
- * This file is part of the lui_draw.c
- *
- *  Copyright (c) : 2018 linghaibin
- *      Author: a6735
- */
+* This file is part of the
+*
+* Copyright (c) 2016-2018 linghaibin
+*
+*/
 
 #include "lui_draw.h"
 #include <math.h>
+#include <memory.h>
 
 typedef struct _lcache {
     uint16_t array[CACHE_SIZE];
     lui_layout_t coordinate;
 } lui_cache;
 
+static void (*updata)(int x, int y, int width, int length, uint16_t * color) = NULL;
 static lui_cache cache; 
 lui_layout_t f_layout;
 
-static void l_point(int s_x, int s_y ,int m_x, int m_y, uint16_t color) {
-    if( ( s_x  >= cache.coordinate.point.x && s_x  < m_x ) &&
-    (  s_y >= cache.coordinate.point.y && s_y < m_y ) ) {
-        int xx = (s_x-cache.coordinate.point.x);
-        int yy = (s_y-cache.coordinate.point.y);
-        cache.array[yy*cache.coordinate.size.width+xx] = color;
-    }
+static void l_point(int s_x, int s_y ,int m_x, int m_y, uint16_t color);
+static void lui_draw_point_clor5658(int s_x, int s_y ,int m_x, int m_y, lui_color5658_t color);
+
+void lui_draw_set_updata( void (*up)(int x, int y, int width, int length, uint16_t * color) ) {
+    updata = up;
 }
 
-static void l_point_alpha(int s_x, int s_y ,int m_x, int m_y, uint16_t color,uint8_t alpha) {
-    if( ( s_x  >= cache.coordinate.point.x && s_x  < m_x ) &&
-    (  s_y >= cache.coordinate.point.y && s_y < m_y ) ) {
-        int xx = (s_x-cache.coordinate.point.x);
-        int yy = (s_y-cache.coordinate.point.y);
-        int pos = yy*cache.coordinate.size.width+xx;
-        cache.array[pos] = lui_alpha_blend(cache.array[pos],color,alpha);
-    }
-}
+void lui_draw_frame(int x, int y, int width, int length, lui_color5658_t color) {
+    if(color.alpha < LUI_COLOR_ALPHA_FALL) {
+        int maxX1 = x + width;
+        int maxY1 = y + length;
+        int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
+        int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
 
-static uint8_t lui_draw_check_layout(int x, int y, int width, int length) {
-    int maxX1 = x + width;
-    int maxY1 = y + length;
-    int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
-    int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
+        int l_x = f_layout.point.x + f_layout.size.width;
+        int l_y = f_layout.point.y + f_layout.size.length;
 
-    int l_x = f_layout.point.x + f_layout.size.width;
-    int l_y = f_layout.point.y + f_layout.size.length;
-
-    if (!(maxX1 < f_layout.point.x || x > l_x
+        if (!(maxX1 < f_layout.point.x || x > l_x
                 || maxY1 < f_layout.point.y || y > l_y )) {
 
             if (!(maxX1 < cache.coordinate.point.x || x > maxX2
@@ -68,148 +59,26 @@ static uint8_t lui_draw_check_layout(int x, int y, int width, int length) {
                 if(maxY1 > l_y) {
                     maxY1 = l_y;
                 }
-                return 1;
-            }
-    }
-    return 0;
-}
 
-int Sgn(float x)
-{
-if(x>0)
-return 1;
-else
-return -1;
-}
-
-void cg_antialiased_line(int x1,int y1,int x2,int y2,uint16_t crColor)  
-{  
-    int d, x, y, ax, ay, sx, sy, dx, dy, fx, fy, bk;  
-      
-    dx = x2-x1;  fx=abs(dx);  ax = fx<<1;  sx = Sgn(dx);
-    dy = y2-y1;  fy=abs(dy);  ay = fy<<1;  sy = Sgn(dy);
-      
-    x = x1;  
-    y = y1;  
-  
-    //// +    
-    int incrE,incrNE;         
-    // double invDenom=20.0/(2.0*sqrt(1.0*dx*dx+dy*dy));  
-    // double temp=0;  
-    // double temp2=0;  
-    //// +  
-  
-    if (ax>ay) {     /* x dominant */  
-        // d = ay-fx;  
-        // /// +  
-        // int two_v_dx=0;  
-        // incrE=(dy<<1);  
-        // incrNE=((dy-dx)<<2);  
-        // double two_dx_invDenom=2.0*dx*invDenom;  
-        // /// +  
-        // for (;;) {  
-        //     /// +  
-        //     temp=two_v_dx*invDenom;  
-        //     temp2=sx>0?temp:-temp;  
-        //     // bk=getpixel(x,y);putpixel(x,y,LERP_COLOR(crColor,bk,WCG_FILTER(temp)));  
-        //     // bk=getpixel(x,y+sy);putpixel(x,y+sy,LERP_COLOR(crColor,bk,WCG_FILTER(two_dx_invDenom-temp2)));  
-        //     // bk=getpixel(x,y-sy);putpixel(x,y-sy,LERP_COLOR(crColor,bk,WCG_FILTER(two_dx_invDenom+temp2)));  
-        //     /// +  
-        //     if (x==x2) return;
-        //     if (d>=0) {  
-        //         two_v_dx=d-fx;   /// +
-        //         y += sy;  
-        //         d -= ax;
-        //     }
-        //     else
-        //         two_v_dx=d+fx;   /// +
-        //     x += sx;
-        //     d += ay;
-              
-        // }  
-    }  
-    else {          /* y dominant */
-        d = ax-fy;
-        /// +  
-        int two_v_dy=0;
-        // incrE=(dx<<1);
-        // incrNE=((dx-dy)<<1);
-        // double two_dy_invDenom=300*dy*invDenom;
-        /// +
-        for (;;) {
-            /// +  
-            // temp=two_v_dy*invDenom;
-            // temp2=sy>0?temp:-temp;
-            l_point_alpha(x,y,800,480,crColor,0);
-            // l_point_alpha(x+sx,y,800,480,crColor,two_dy_invDenom-temp2);
-            // l_point_alpha(x-sx,y,800,480,crColor,two_dy_invDenom-temp2);
-            /// +  
-            if (y==y2) return;
-            if (d>=0) {
-                two_v_dy=d-fy;  /// +
-                x += sx;
-                d -= ay;
-            }
-            else
-            two_v_dy=d+fy;   /// +
-            y += sy;
-            d += ax;
-        }
-    }
-}
-
-void lui_draw_frame(int x, int y, int width, int length, int alpha, uint16_t color) {
-    int maxX1 = x + width;
-    int maxY1 = y + length;
-    int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
-    int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
-
-    int l_x = f_layout.point.x + f_layout.size.width;
-    int l_y = f_layout.point.y + f_layout.size.length;
-
-    if (!(maxX1 < f_layout.point.x || x > l_x
-            || maxY1 < f_layout.point.y || y > l_y )) {
-
-        if (!(maxX1 < cache.coordinate.point.x || x > maxX2
-                || maxY1 < cache.coordinate.point.y || y > maxY2)) {
-            int x1 = 0; int y1 = 0;
-            int x2 = cache.coordinate.size.width;
-            int y2 = cache.coordinate.size.length;
-
-            if(f_layout.point.x > x) {
-                x = f_layout.point.x;
-            }
-
-            if(f_layout.point.y > y) {
-                y = f_layout.point.y;
-            }
-
-            if(maxX1 > l_x) {
-                maxX1 = l_x;
-            }
-
-            if(maxY1 > l_y) {
-                maxY1 = l_y;
-            }
-
-            if(x >= cache.coordinate.point.x) {
-                x1 = x-cache.coordinate.point.x;
-            }
-            if(maxX1 < maxX2) {
-                x2 = cache.coordinate.size.width-(maxX2-maxX1);
-            }
-            if(y >= cache.coordinate.point.y) {
-                y1 = y-cache.coordinate.point.y;
-            }
-            if(maxY1 < maxY2) {
-                y2 = cache.coordinate.size.length-(maxY2-maxY1);
-            }
-            for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
-                for(int x_j = x1; x_j < x2; x_j++) {
-                    if(alpha == 0) {
-                        cache.array[y_i+x_j] = color;
-                    } else {
-                        cache.array[y_i+x_j] = lui_alpha_blend(cache.array[y_i+x_j],color,alpha);
+                if(x >= cache.coordinate.point.x) {
+                    x1 = x-cache.coordinate.point.x;
+                }
+                if(maxX1 < maxX2) {
+                    x2 = cache.coordinate.size.width-(maxX2-maxX1);
+                }
+                if(y >= cache.coordinate.point.y) {
+                    y1 = y-cache.coordinate.point.y;
+                }
+                if(maxY1 < maxY2) {
+                    y2 = cache.coordinate.size.length-(maxY2-maxY1);
+                }
+                for(int y_i = y1*cache.coordinate.size.width; y_i < y2*cache.coordinate.size.width; y_i += cache.coordinate.size.width) {
+                    for(int x_j = x1; x_j < x2; x_j++) {
+                        if(color.alpha == LUI_COLOR_ALPHA_NULL) {
+                            cache.array[y_i+x_j] = color.color.rgb565;
+                        } else {
+                            cache.array[y_i+x_j] = lui_color_alpha_blend(cache.array[y_i+x_j],color.color.rgb565,color.alpha);
+                        }
                     }
                 }
             }
@@ -402,7 +271,7 @@ void lui_draw_round_frame( int x1, int y1, int x2, int y2, int r, uint16_t c ) {
     lui_draw_arc(x2-r, y2-r, r, 0xC0, c);
 }
 
-void lui_draw_fill_round_frame( int x1, int y1, int x2, int y2, int r, int c ) {
+void lui_draw_fill_round_frame( int x1, int y1, int x2, int y2, int r, lui_color5658_t color ) {
     int  x,y,xd;
     x2 += x1;
     y2 += y1;
@@ -418,27 +287,27 @@ void lui_draw_fill_round_frame( int x1, int y1, int x2, int y2, int r, int c ) {
     }
     if ( r<=0 ) return;
     xd = 3 - (r << 1); x = 0; y = r;
-    lui_draw_frame(x1 + r, y1, x2 - r - x1 - r, (y2-y1), 100,c);
+    lui_draw_frame(x1 + r, y1, x2 - r - x1 - r, (y2-y1), color);
     while ( x <= y ) {
         if( y > 0 ) {
-        lui_draw_line(x2 + x - r, y1 - y + r, x2+ x - r, y + y2 - r, c);
-        lui_draw_line(x1 - x + r, y1 - y + r, x1- x + r, y + y2 - r, c);
+            lui_draw_line(x2 + x - r, y1 - y + r, x2+ x - r, y + y2 - r, color.color.rgb565);
+            lui_draw_line(x1 - x + r, y1 - y + r, x1- x + r, y + y2 - r, color.color.rgb565);
         }
         if( x > 0 ) {
-        lui_draw_line(x1 - y + r, y1 - x + r, x1 - y + r, x + y2 - r, c);
-        lui_draw_line(x2 + y - r, y1 - x + r, x2 + y - r, x + y2 - r, c);
+            lui_draw_line(x1 - y + r, y1 - x + r, x1 - y + r, x + y2 - r, color.color.rgb565);
+            lui_draw_line(x2 + y - r, y1 - x + r, x2 + y - r, x + y2 - r, color.color.rgb565);
         }
         if ( xd < 0 ) {
-        xd += (x << 2) + 6;
+            xd += (x << 2) + 6;
         } else {
-        xd += ((x - y) << 2) + 10;
-        y--;
+            xd += ((x - y) << 2) + 10;
+            y--;
         }
         x++;
     }
 }
 
-void lui_draw_mesh( int x1, int y1, int x2, int y2, uint16_t c ) {
+void lui_draw_mesh( int x1, int y1, int x2, int y2, lui_color5658_t color ) {
     int maxx2 = cache.coordinate.point.x + cache.coordinate.size.width;
     int maxy2 = cache.coordinate.point.y + cache.coordinate.size.length;
     if (!((x1 + x2) < cache.coordinate.point.x || x1 > maxx2 || (y1 + y2) < cache.coordinate.point.y || y1 > maxy2)) {
@@ -457,7 +326,7 @@ void lui_draw_mesh( int x1, int y1, int x2, int y2, uint16_t c ) {
         {
             for( n=x1; n<=x2; n+=2 )
             {
-                l_point(n,m,maxx2,maxy2,c);
+                lui_draw_point_clor5658(n,m,maxx2,maxy2,color);
             }
         }
     }
@@ -521,7 +390,7 @@ void lui_draw_font(int x, int y, uint8_t wighth, uint8_t length, uint16_t color,
                         if(mate[ptr] == 0xff) {
                             cache.array[y_i+x_j] = color;
                         } else {
-                            cache.array[y_i+x_j] = lui_alpha_blend(color,cache.array[y_i+x_j],mate[(ptr)]);
+                            cache.array[y_i+x_j] = lui_color_alpha_blend(color,cache.array[y_i+x_j],mate[(ptr)]);
                         }
                     }
                     ptr++;
@@ -660,7 +529,7 @@ void lui_draw_png(int x, int y, int width, int length, uint8_t * material) {
                 for(int x_j = x1; x_j < x2; x_j++) {
                     if(material[ptr+2] != 0) {
                     uint16_t color = (uint16_t)( material[ptr+1]<<8)+material[ptr];
-                    cache.array[y_i+x_j] = lui_alpha_blend(cache.array[y_i+x_j],color, 0xff-material[ptr+2]);
+                    cache.array[y_i+x_j] = lui_color_alpha_blend(cache.array[y_i+x_j],color, 0xff-material[ptr+2]);
                     }
                     ptr += 3;
                 }
@@ -741,7 +610,69 @@ void lui_draw_screen(int x, int y, int width, int length, uint32_t * material) {
     }
 }
 
-void lui_set_cache_size(int x, int y, int width, int length) {
+static void l_point(int s_x, int s_y ,int m_x, int m_y, uint16_t color) {
+    if( ( s_x  >= cache.coordinate.point.x && s_x  < m_x ) &&
+    (  s_y >= cache.coordinate.point.y && s_y < m_y ) ) {
+        int xx = (s_x-cache.coordinate.point.x);
+        int yy = (s_y-cache.coordinate.point.y);
+        cache.array[yy*cache.coordinate.size.width+xx] = color;
+    }
+}
+
+static void lui_draw_point_clor5658(int s_x, int s_y ,int m_x, int m_y, lui_color5658_t color) {
+    if(color.alpha < LUI_COLOR_ALPHA_FALL) {
+        if( ( s_x  >= cache.coordinate.point.x && s_x  < m_x ) &&
+        (  s_y >= cache.coordinate.point.y && s_y < m_y ) ) {
+            uint32_t pos = (s_y-cache.coordinate.point.y)*cache.coordinate.size.width+(s_x-cache.coordinate.point.x);
+            if(color.alpha == LUI_COLOR_ALPHA_NULL) {
+                cache.array[pos] = color.color.rgb565;
+            } else {
+                cache.array[pos] = lui_color_alpha_blend(cache.array[pos],color.color.rgb565,color.alpha);
+            }
+        }
+    }
+}
+
+static uint8_t lui_draw_check_layout(int x, int y, int width, int length) {
+    int maxX1 = x + width;
+    int maxY1 = y + length;
+    int maxX2 = cache.coordinate.point.x + cache.coordinate.size.width;
+    int maxY2 = cache.coordinate.point.y + cache.coordinate.size.length;
+
+    int l_x = f_layout.point.x + f_layout.size.width;
+    int l_y = f_layout.point.y + f_layout.size.length;
+
+    if (!(maxX1 < f_layout.point.x || x > l_x
+                || maxY1 < f_layout.point.y || y > l_y )) {
+
+            if (!(maxX1 < cache.coordinate.point.x || x > maxX2
+                    || maxY1 < cache.coordinate.point.y || y > maxY2)) {
+                int x1 = 0; int y1 = 0;
+                int x2 = cache.coordinate.size.width;
+                int y2 = cache.coordinate.size.length;
+
+                if(f_layout.point.x > x) {
+                    x = f_layout.point.x;
+                }
+
+                if(f_layout.point.y > y) {
+                    y = f_layout.point.y;
+                }
+
+                if(maxX1 > l_x) {
+                    maxX1 = l_x;
+                }
+
+                if(maxY1 > l_y) {
+                    maxY1 = l_y;
+                }
+                return 1;
+            }
+    }
+    return 0;
+}
+
+void lui_drawcache_size_set(int x, int y, int width, int length) {
     for(int i = 0; i < CACHE_SIZE; i++) {
         cache.array[i] = 0x00;
     }
@@ -751,13 +682,98 @@ void lui_set_cache_size(int x, int y, int width, int length) {
     cache.coordinate.size.length = length;
 }
 
-lui_layout_t * lui_get_cache_size(void) {
+lui_layout_t * lui_draw_cache_size(void) {
     return &cache.coordinate;
 }
 
-extern void lsdl_box(int x, int y, int width, int length, uint16_t * color);
-void lui_cachedev(int x, int y, int width, int length) {
-    lsdl_box(x,y,width,length,cache.array);
+void lui_draw_cache_to_lcd(int x, int y, int width, int length) {
+    if(updata != NULL) {
+        updata(x,y,width,length,cache.array);
+    }
+}
+
+int Sgn(float x)
+{
+    if(x>0)
+    return 1;
+    else
+    return -1;
+}
+
+void cg_antialiased_line(int x1,int y1,int x2,int y2,uint16_t crColor)  
+{  
+    int d, x, y, ax, ay, sx, sy, dx, dy, fx, fy, bk;  
+      
+    dx = x2-x1;  fx=abs(dx);  ax = fx<<1;  sx = Sgn(dx);
+    dy = y2-y1;  fy=abs(dy);  ay = fy<<1;  sy = Sgn(dy);
+      
+    x = x1;  
+    y = y1;  
+  
+    //// +    
+    int incrE,incrNE;         
+    // double invDenom=20.0/(2.0*sqrt(1.0*dx*dx+dy*dy));  
+    // double temp=0;  
+    // double temp2=0;  
+    //// +  
+  
+    if (ax>ay) {     /* x dominant */  
+        // d = ay-fx;  
+        // /// +  
+        // int two_v_dx=0;  
+        // incrE=(dy<<1);  
+        // incrNE=((dy-dx)<<2);  
+        // double two_dx_invDenom=2.0*dx*invDenom;  
+        // /// +  
+        // for (;;) {  
+        //     /// +  
+        //     temp=two_v_dx*invDenom;  
+        //     temp2=sx>0?temp:-temp;  
+        //     // bk=getpixel(x,y);putpixel(x,y,LERP_COLOR(crColor,bk,WCG_FILTER(temp)));  
+        //     // bk=getpixel(x,y+sy);putpixel(x,y+sy,LERP_COLOR(crColor,bk,WCG_FILTER(two_dx_invDenom-temp2)));  
+        //     // bk=getpixel(x,y-sy);putpixel(x,y-sy,LERP_COLOR(crColor,bk,WCG_FILTER(two_dx_invDenom+temp2)));  
+        //     /// +  
+        //     if (x==x2) return;
+        //     if (d>=0) {  
+        //         two_v_dx=d-fx;   /// +
+        //         y += sy;  
+        //         d -= ax;
+        //     }
+        //     else
+        //         two_v_dx=d+fx;   /// +
+        //     x += sx;
+        //     d += ay;
+              
+        // }  
+    }  
+    else {          /* y dominant */
+        d = ax-fy;
+        /// +  
+        int two_v_dy=0;
+        // incrE=(dx<<1);
+        // incrNE=((dx-dy)<<1);
+        // double two_dy_invDenom=300*dy*invDenom;
+        /// +
+        for (;;) {
+            /// +  
+            // temp=two_v_dy*invDenom;
+            // temp2=sy>0?temp:-temp;
+            // l_point_alpha(x,y,800,480,crColor,0);
+            // l_point_alpha(x+sx,y,800,480,crColor,two_dy_invDenom-temp2);
+            // l_point_alpha(x-sx,y,800,480,crColor,two_dy_invDenom-temp2);
+            /// +  
+            if (y==y2) return;
+            if (d>=0) {
+                two_v_dy=d-fy;  /// +
+                x += sx;
+                d -= ay;
+            }
+            else
+            two_v_dy=d+fy;   /// +
+            y += sy;
+            d += ax;
+        }
+    }
 }
 
 typedef int16_t lv_coord_t;

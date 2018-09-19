@@ -6,7 +6,6 @@
  */
 
 #include "lui_button.h"
-#include "lui_color.h"
 #include "lui_draw.h"
 #include "lui_text.h"
 
@@ -14,10 +13,9 @@ static void lui_button_design (struct _lui_obj_t * obj, lui_point_t *point);
 static void lui_button_event(lui_touch_val_t *val);
 
 lui_obj_t * lui_create_button(int x,int y) {
-    lui_button * but = lui_malloc(sizeof(lui_button));
-    but->color = lui_color565(white);
-    but->alpha = 0;
-    but->bold = 1;
+    lui_button_t * but = lui_malloc(sizeof(lui_button_t));
+    but->color.color.rgb565 = lui_color_888_to_565(lui_color_white);
+    but->color.alpha = 0;
     but->on_click = NULL;
     but->on_click_down = NULL;
     lui_obj_t * obj = lui_create_obj(x,y,50,25,but,lui_button_design);
@@ -29,10 +27,10 @@ lui_obj_t * lui_create_button(int x,int y) {
 }
 
 void lui_button_set_text(lui_obj_t * obj, char * tex) {
-    lui_button * but = obj->val;
+    lui_button_t * but = obj->val;
     lui_text_set_text(obj->child,tex);
     int tex_size = 0;
-    lui_text * _text = obj->child->val;
+    lui_text_t * _text = obj->child->val;
     uint16_t adr = 0;
     uint16_t wight = 0;
     uint16_t length = 0;
@@ -63,13 +61,13 @@ void lui_button_set_text(lui_obj_t * obj, char * tex) {
     lui_obj_set_y(obj->child,_y);
 }
 
-void lui_button_set_color(lui_obj_t * obj, uint16_t color) {
-    lui_button * but = obj->val;
+void lui_button_set_color(lui_obj_t * obj, lui_color5658_t color) {
+    lui_button_t * but = obj->val;
     but->color = color;
 }
 
 void lui_button_text_set_color(lui_obj_t * obj, uint16_t color) {
-    lui_button * but = obj->val;
+    lui_button_t * but = obj->val;
     lui_text_set_color(obj->child,color);
 }
 
@@ -79,37 +77,37 @@ void lui_button_set_size(lui_obj_t * obj, int width,int length) {
 }
 
 void lui_button_setonclicklistener(lui_obj_t * obj, void (*on_click)(lui_obj_t * obj)) {
-    lui_button * but = obj->val;
+    lui_button_t * but = obj->val;
     but->on_click = on_click;
 }
 
 void lui_button_setonclicklistener_down(lui_obj_t * obj, void (*on_click_down)(lui_obj_t * obj)) {
-    lui_button * but = obj->val;
+    lui_button_t * but = obj->val;
     but->on_click_down = on_click_down;
 }
 
 static void lui_button_design (struct _lui_obj_t * obj, lui_point_t *point) {
-    lui_button * but = obj->val;
+    lui_button_t * but = obj->val;
     lui_draw_frame(point->x,
                     point->y,
                     obj->layout.size.width,
                     obj->layout.size.length,
-                    but->alpha,but->color);
+                    but->color);
     // int x = point->x + (obj->layout.size.width/2) - (but->tex_size*(but->bold*4.5)/2);
     // int y = point->y + (obj->layout.size.length/2) - but->bold*3.5;
     // lui_draw_text(x,y,but->tex_color, LFT_Y_CONSOLA_10,but->tex);
 }
 
 static void lui_button_event(lui_touch_val_t *val) {
-    lui_button * but = val->obj->val;
+    lui_button_t * but = val->obj->val;
     if(val->falg == 2) {
-        but->alpha = 200;
+        but->color.alpha = 200;
         if(but->on_click_down != NULL) {
             but->on_click_down(val->obj);
         }
     }
     if(val->falg == 0) {
-        but->alpha = 0;
+        but->color.alpha = 0;
         if(but->on_click != NULL) {
             but->on_click(val->obj);
         }

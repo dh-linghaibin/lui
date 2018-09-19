@@ -26,7 +26,7 @@ typedef enum {
     LIP_EXTERNAL,
 } lui_icon_path;
 
-typedef struct _lui_icon {
+typedef struct _lui_icon_t {
     uint8_t       mesh : 4;
     lui_icon_type type : 4;
     lui_icon_path path;
@@ -34,7 +34,7 @@ typedef struct _lui_icon {
     uint8_t frames_now;
     lui_tick_t * tic;
     char * path_name;
-} lui_icon;
+} lui_icon_t;
 
 lui_obj_t *lui_create_icon(int x, int y);
 void lui_icon_set_path(lui_obj_t * obj, lui_icon_path path, char * path_name);

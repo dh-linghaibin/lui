@@ -10,6 +10,8 @@
 static uint32_t sys_time    = 0;
 static lui_tick_t tick_head = {
     0,
+    0,
+    NULL,
     NULL,
     NULL,
 };

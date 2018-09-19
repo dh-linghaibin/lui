@@ -151,6 +151,7 @@ static int tick_thread(void *data) {
 
 int main(int argc, char *args[]) {
     tft_init();
+    lui_draw_set_updata(lsdl_box);
     lui_init();
     lui_loop();
     tft_update();

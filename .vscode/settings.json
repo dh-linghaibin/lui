@@ -30,7 +30,10 @@
         "desk_jpg.h": "c",
         "consola_font_10.h": "c",
         "consola_font_22.h": "c",
-        "kjh_jpg.h": "c"
+        "kjh_jpg.h": "c",
+        "lui_checkbox.h": "c",
+        "lui_keyboard.h": "c",
+        "memory.h": "c"
     },
     "python.jediEnabled": false
 }

@@ -18,6 +18,11 @@ extern "C" {
 #include <stdarg.h>
 #include <stdint.h>
 
+typedef enum {
+    lui_true = 1,
+    lui_false = 0,
+} lui_bool;
+
 typedef struct _lui_point_t {
     int x;
     int y;

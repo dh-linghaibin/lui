@@ -13,7 +13,7 @@ static void lui_icon_event(lui_touch_val_t *val);
 static void icon_tic_event(lui_tick_t * tick);
 
 lui_obj_t *lui_create_icon(int x, int y) {
-    lui_icon * icon = lui_malloc(sizeof(lui_icon));
+    lui_icon_t * icon = lui_malloc(sizeof(lui_icon_t));
     icon->path_name = NULL;
     icon->mesh = 0;
     icon->frames = 0;
@@ -26,7 +26,7 @@ lui_obj_t *lui_create_icon(int x, int y) {
 }
 
 static void icon_tic_event(lui_tick_t * tick) {
-    lui_icon * icon = tick->obj->val;
+    lui_icon_t * icon = tick->obj->val;
     if(icon->frames_now+1 < icon->frames) {
         icon->frames_now++;
     } else {
@@ -37,7 +37,7 @@ static void icon_tic_event(lui_tick_t * tick) {
 void lui_icon_set_path(lui_obj_t * obj, lui_icon_path path, char * path_name) {
     if(obj == NULL) return;
     if(path_name == NULL) return;
-    lui_icon * icon = obj->val;
+    lui_icon_t * icon = obj->val;
     icon->path = path;
     icon->path_name = path_name;
     if(path == LIP_EXTERNAL) {
@@ -69,7 +69,7 @@ void lui_icon_set_path(lui_obj_t * obj, lui_icon_path path, char * path_name) {
 }
 
 static void lui_icon_design (struct _lui_obj_t * obj, lui_point_t *point) {
-    lui_icon * icon = obj->val;
+    lui_icon_t * icon = obj->val;
     if(icon->path_name != NULL) {
         uint8_t * material = NULL;
         if(icon->path ==LIP_EXTERNAL) {
@@ -110,7 +110,7 @@ static void lui_icon_design (struct _lui_obj_t * obj, lui_point_t *point) {
             lui_draw_png(point->x,point->y,obj->layout.size.width,obj->layout.size.length,material);
         }
         if(icon->mesh == 1) {
-            lui_draw_frame(point->x,point->y,obj->layout.size.width,obj->layout.size.length,200,0x34ff);
+            // lui_draw_frame(point->x,point->y,obj->layout.size.width,obj->layout.size.length,200,0x34ff);
         }
         if(icon->path ==LIP_EXTERNAL) {
             free(material);
@@ -120,7 +120,7 @@ static void lui_icon_design (struct _lui_obj_t * obj, lui_point_t *point) {
 }
 
 static void lui_icon_event(lui_touch_val_t *val) {
-    lui_icon * icon = val->obj->val;
+    lui_icon_t * icon = val->obj->val;
     if(val->falg == 2) {
         icon->mesh = 1;
     }

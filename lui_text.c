@@ -17,39 +17,39 @@ static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point);
 static void lui_text_event(lui_touch_val_t *val);
 
 lui_obj_t * lui_create_text(int x,int y) {
-    lui_text * text = lui_malloc(sizeof(lui_button));
+    lui_text_t * text = lui_malloc(sizeof(lui_text_t));
     text->tex = "";
     text->color = 0x00;
     text->path = LTP_INTERNAL;
-    text->path_name = consola_font_10;
+    text->path_name = (char *)consola_font_10;
     lui_obj_t * obj = lui_create_obj(x,y,50,50,text,lui_text_design);
     lui_obj_set_event(obj,NULL);
     return obj;
 }
 
 void lui_text_set_font(lui_obj_t * obj, lui_text_path path, char * path_name) {
-    lui_text * text = obj->val;
+    lui_text_t * text = obj->val;
     text->path = path;
     text->path_name = path_name;
 }
 
 void lui_text_set_text(lui_obj_t * obj, char * tex) {
-    lui_text * text = obj->val;
+    lui_text_t * text = obj->val;
     text->tex = tex;
 }
 
 void lui_text_set_color(lui_obj_t * obj, uint16_t color) {
-    lui_text * text = obj->val;
+    lui_text_t * text = obj->val;
     text->color = color;
 }
 
 char * lui_text_get_text(lui_obj_t * obj) {
-    lui_text * text = obj->val;
+    lui_text_t * text = obj->val;
     return text->tex;
 }
 
 static void lui_text_design (struct _lui_obj_t * obj, lui_point_t *point) {
-    lui_text * text = obj->val;
+    lui_text_t * text = obj->val;
     int ax = point->x;
     int ay = point->y;
     char * tex = text->tex;

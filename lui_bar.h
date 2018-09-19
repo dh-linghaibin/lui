@@ -13,13 +13,14 @@ extern "C" {
 #endif
 
 #include "lui_obj.h"
+#include "lui_color.h"
 
-typedef struct _lui_bar {
+typedef struct _lui_bar_t {
     uint8_t val;
-    uint16_t b_color;
-    uint16_t t_color;
+    lui_color5658_t b_color;
+    lui_color5658_t t_color;
     void (*on_event)(lui_obj_t * obj);
-} lui_bar;
+} lui_bar_t;
 
 lui_obj_t * lui_create_bar(int x, int y);
 void lui_bar_set_event(lui_obj_t * obj, void (*on_event)(lui_obj_t * obj));

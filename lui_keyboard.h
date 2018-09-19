@@ -14,12 +14,12 @@ extern "C" {
 
 #include "lui_obj.h"
 
-typedef struct _lui_keyboard {
+typedef struct _lui_keyboard_t {
     int x;
     int y;
     lui_obj_t * tips;
     void (*on_click)(lui_obj_t * obj, char val);
-} lui_keyboard;
+} lui_keyboard_t;
 
 lui_obj_t * lui_create_keyboard(int x,int y);
 

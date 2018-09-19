@@ -15,21 +15,21 @@ lui_obj_t *xshow;
 uint8_t c_r, c_g, c_b;
 
 void bar_r_event(lui_obj_t * obj) {
-    lui_bar * bar = obj->val;
+    lui_bar_t * bar = obj->val;
     c_r = bar->val*2.55;
-    lui_text_set_color(xshow,lui_color_rgb( c_r,c_g,c_b));
+    lui_text_set_color(xshow,lui_color_rgb_to_565( c_r,c_g,c_b));
 }
 
 void bar_g_event(lui_obj_t * obj) {
-    lui_bar * bar = obj->val;
+    lui_bar_t * bar = obj->val;
     c_g = bar->val*2.55;
-    lui_text_set_color(xshow,lui_color_rgb( c_r,c_g,c_b));
+    lui_text_set_color(xshow,lui_color_rgb_to_565( c_r,c_g,c_b));
 }
 
 void bar_b_event(lui_obj_t * obj) {
-    lui_bar * bar = obj->val;
+    lui_bar_t * bar = obj->val;
     c_b = bar->val*2.55;
-    lui_text_set_color(xshow,lui_color_rgb( c_r,c_g,c_b));
+    lui_text_set_color(xshow,lui_color_rgb_to_565( c_r,c_g,c_b));
 }
 
 int i = 0;
@@ -43,7 +43,7 @@ void tic_event(lui_tick_t * tick) {
 
 void lui_init(void) {
     lui_obj_t * icon = lui_create_icon(0,0);
-    lui_icon_set_path(icon,LIP_INTERNAL,desk_jpg);
+    lui_icon_set_path(icon,LIP_INTERNAL,(char *)desk_jpg);
     lui_obj_add_child(lui_get_root(),icon);
 
     lui_obj_t * icon2 = lui_create_icon(0,0);
@@ -92,14 +92,14 @@ void lui_init(void) {
     lui_obj_t * but = lui_create_button(100,120);
     lui_button_set_text(but,"Enter");
     lui_obj_add_child(lui_get_root(),but);
-    lui_text_set_color(but->child,lui_color565(red));
+    lui_text_set_color(but->child,lui_color_888_to_565(lui_color_red));
 
     lui_obj_t * tex = lui_create_text(50,0);
     lui_text_set_text(tex,"88ABC");
     lui_obj_add_child(group,tex);
 
     lui_obj_t * tex2 = lui_create_text(50,50);
-    lui_text_set_font(tex2, LFP_INTERNAL, consola_font_22);
+    lui_text_set_font(tex2, LTP_INTERNAL, (char *)consola_font_22);
     lui_text_set_text(tex2,"LING");
     lui_obj_add_child(group,tex2);
 
@@ -108,17 +108,22 @@ void lui_init(void) {
     lui_obj_add_child(lui_get_root(),group2);
 
     lui_obj_t * tex3 = lui_create_text(0,0);
-    lui_text_set_font(tex3, LFP_EXTERNAL, "tool/china_16.bin");
+    lui_text_set_font(tex3, LTP_EXTERNAL, "tool/china_16.bin");
     lui_text_set_text(tex3,"窗口1-测试");
     lui_obj_add_child(group2,tex3);
+
+    lui_obj_t * tex4 = lui_create_text(0,40);
+    lui_text_set_font(tex4, LTP_EXTERNAL, "tool/china_16.bin");
+    lui_text_set_text(tex4,"哈哈哈哈");
+    lui_obj_add_child(group2,tex4);
 }
 
 void lui_loop(void) {
     for(int i = 0; i < LCD_LENGTH; i += CACHE_LENGTH) {
         for(int j = 0; j < LCD_WIDTH; j += CACHE_WIDTH) {
-            lui_set_cache_size(j,i,CACHE_WIDTH,CACHE_LENGTH);
+            lui_drawcache_size_set(j,i,CACHE_WIDTH,CACHE_LENGTH);
             lui_obj_traverse(lui_get_root());
-            lui_cachedev(j,i,CACHE_WIDTH,CACHE_LENGTH);
+            lui_draw_cache_to_lcd(j,i,CACHE_WIDTH,CACHE_LENGTH);
         }
     }
 }
