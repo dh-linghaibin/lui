@@ -13,15 +13,9 @@ extern "C" {
 #endif
 
 #include "lui_config.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdint.h>
 #include "sram.h"
-
 #include "lui_obj.h"
 #include "lui_draw.h"
-
 #include "lui_color.h"
 #include "lui_button.h"
 #include "lui_icon.h"

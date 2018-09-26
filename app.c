@@ -167,7 +167,6 @@ int main(int argc, char *args[]) {
                 case SDL_MOUSEMOTION: {
                     if(touch_flag == 1) {
                         lui_obj_even(event.button.x, event.button.y, touch_flag);
-                        lui_loop();
                     }
                 } break;
                 case SDL_MOUSEWHEEL: {
@@ -175,23 +174,17 @@ int main(int argc, char *args[]) {
                 } break;
                 case SDL_MOUSEBUTTONDOWN: {
                     if( event.button.button == SDL_BUTTON_LEFT ){
-                        //printf("down\n");
                         touch_flag = 1;
                         lui_obj_even(event.button.x, event.button.y, 2);
-                        lui_loop();
                     }
                 } break;
                 case SDL_MOUSEBUTTONUP: {
                     if( event.button.button == SDL_BUTTON_LEFT ){
-                        //printf("up\n");
                         touch_flag = 0;
                         lui_obj_even(event.button.x, event.button.y, touch_flag);
-                        lui_loop();
                     }
                 } break;
             }
-            // SDL_Delay(10);
-            // tft_update();
         }
         lui_loop();
         SDL_Delay(10);

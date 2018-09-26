@@ -24,6 +24,7 @@ typedef struct _lui_view_group_t {
 
 lui_obj_t * lui_view_group_create(int x,int y);
 void lui_view_group_set_size(lui_obj_t * obj, int width, int length);
+void lui_view_group_back_color_set(lui_obj_t * obj, lui_color5658_t color);
 
 #ifdef __cplusplus
 }

@@ -29,8 +29,8 @@ typedef struct _lui_point_t {
 } lui_point_t;
 
 typedef struct _lui_size_t {
-    uint16_t length;
     uint16_t width;
+    uint16_t length;
 } lui_size_t;
 
 typedef struct _lui_layout_t {
@@ -50,6 +50,8 @@ typedef struct _lui_touch_val_t {
 
 typedef struct _lui_obj_t {
     lui_layout_t      layout;
+    lui_point_t       rel_point;
+    lui_layout_t      rel_layout;//test
     struct _lui_obj_t *father;
     struct _lui_obj_t *brother;
     struct _lui_obj_t *child;

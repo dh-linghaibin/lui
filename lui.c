@@ -116,6 +116,42 @@ void lui_init(void) {
     lui_text_set_font(tex4, LTP_EXTERNAL, "tool/china_16.bin");
     lui_text_set_text(tex4,"哈哈哈哈");
     lui_obj_add_child(group2,tex4);
+
+    // for(int i = 0; i < 1500;i++) {
+    //     lui_obj_t * tex5 = lui_create_text(0,0);
+    //     lui_text_set_font(tex5, LTP_EXTERNAL, "tool/china_16.bin");
+    //     lui_text_set_text(tex5,"哈哈哈哈");
+    //     lui_obj_add_child(group2,tex5);
+    // }
+    
+    // lui_obj_t * group1 = lui_view_group_create(0,0);
+    // lui_view_group_set_size(group1,200,200);
+    // lui_color5658_t color;
+    // color.color.rgb565 = lui_color_888_to_565(lui_color_azure);
+    // color.alpha = LUI_COLOR_ALPHA_NULL;
+    // lui_view_group_back_color_set(group1,color);
+    // lui_obj_add_child(lui_get_root(),group1);
+
+    // lui_obj_t * group2 = lui_view_group_create(0,0);
+    // lui_view_group_set_size(group2,180,180);
+    // color.color.rgb565 = lui_color_888_to_565(lui_color_red);
+    // color.alpha = LUI_COLOR_ALPHA_NULL;
+    // lui_view_group_back_color_set(group2,color);
+    // lui_obj_add_child(group1,group2);
+
+    // lui_obj_t * group4 = lui_view_group_create(0,0);
+    // lui_view_group_set_size(group4,160,160);
+    // color.color.rgb565 = lui_color_888_to_565(lui_color_yellow);
+    // color.alpha = LUI_COLOR_ALPHA_NULL;
+    // lui_view_group_back_color_set(group4,color);
+    // lui_obj_add_child(group2,group4);
+
+    // lui_obj_t * group3 = lui_view_group_create(250,0);
+    // lui_view_group_set_size(group3,50,50);
+    // color.color.rgb565 = lui_color_888_to_565(lui_color_azure);
+    // color.alpha = LUI_COLOR_ALPHA_NULL;
+    // lui_view_group_back_color_set(group3,color);
+    // lui_obj_add_child(lui_get_root(),group3);
 }
 
 void lui_loop(void) {
@@ -131,3 +167,4 @@ void lui_loop(void) {
 
 
 
+ 

@@ -133,8 +133,6 @@ void lui_draw_line(int s_x, int s_y, int e_x, int e_y, uint16_t color) {
     }
 }
 
-
-
 void lui_draw_empty_frame( int x1, int y1, int x2, int y2, uint16_t color ) {
     lui_draw_line(x1,y1,x2,y1,color);
     lui_draw_line(x1,y2,x2,y2,color);
@@ -689,6 +687,81 @@ lui_layout_t * lui_draw_cache_size(void) {
 void lui_draw_cache_to_lcd(int x, int y, int width, int length) {
     if(updata != NULL) {
         updata(x,y,width,length,cache.array);
+    }
+}
+
+
+//逆时针旋转到pdst的中心，其它用0填充
+//pSrc,srcW,srcH原图及其尺寸
+//pDst,dstW,dstH旋转后图像及其尺寸
+//旋转角度
+//通道数
+void myImgRotate(unsigned char* pSrc,int srcW,int srcH,
+                unsigned char* pDst,int dstW,int dstH,
+                double degree,int nchannel)
+{
+    int k;
+    double angle = degree  * 3.1415926 / 180.;	//旋转角度
+    double co=cos(angle);	//余弦
+    double si=sin(angle);	//正弦
+    int rotateW,rotateH;	//旋转后图像的高宽
+    int srcWidthStep=srcW*nchannel;//宽度步长
+    int dstWisthStep=dstW*nchannel;	
+    int x,y;
+    int xMin,xMax,yMin,yMax;
+    int xOff,yOff;	//偏移
+    double xSrc=0.;
+    double ySrc=0.;	//变换后图像的坐标在原图中的坐标
+
+    //临时变量
+    float valueTemp=0.;
+    float a1,a2,a3,a4;
+
+    memset(pDst,0,dstWisthStep*dstH*sizeof(unsigned char));
+    //计算旋转后的坐标范围
+    rotateH=srcW*fabs(si)+srcH*fabs(co);
+    rotateW=srcW*fabs(co)+srcH*fabs(si);
+
+    //计算偏移
+    xOff=dstW/2;
+    yOff=dstH/2;
+
+    yMin=(dstH-rotateH)/2.;
+    yMax=yMin+rotateH+1;	//加1
+    xMin=(dstW-rotateW)/2.;
+    xMax=xMin+rotateW+1;
+
+    for (y=yMin;y<=yMax;y++)
+    {
+        for (x=xMin;x<=xMax;x++)
+        {
+            //求取在原图中的坐标
+            ySrc=si*(x-xOff)+co*(y-yOff)+(srcH/2);
+            xSrc=co*(x-xOff)-si*(y-yOff)+(srcW/2);
+            //如果在原图范围内
+            if (ySrc>=0. && ySrc<srcH-0.5 && xSrc>=0. && xSrc<srcW-0.5)
+            {
+                //插值
+                int xSmall=floor(xSrc);
+                int xBig=ceil(xSrc);
+                int ySmall=floor(ySrc);
+                int yBig=ceil(ySrc);
+
+                for (k=0;k<nchannel;k++)
+                {
+                    a1=(xSmall>=0 && ySmall>=0 ? pSrc[ySmall*srcWidthStep+xSmall*nchannel+k]:0);
+                    a2=(xBig<srcW && ySmall>=0 ? pSrc[ySmall*srcWidthStep+xBig*nchannel+k]:0);
+                    a3=(xSmall>=0 && yBig<srcH ? pSrc[yBig*srcWidthStep+xSmall*nchannel+k]:0);
+                    a4=(xBig<srcW && yBig<srcH ? pSrc[yBig*srcWidthStep+xBig*nchannel+k]:0);
+                    double ux=xSrc-xSmall;
+                    double uy=ySrc-ySmall;
+                    //双线性插值
+                    valueTemp=(1-ux)*(1-uy)*a1+(1-ux)*uy*a3+(1-uy)*ux*a2+ux*uy*a4;
+                    pDst[y*dstWisthStep+x*nchannel+k]=floor(valueTemp);
+                }
+
+            }
+        }
     }
 }
 

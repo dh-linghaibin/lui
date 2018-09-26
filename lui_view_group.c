@@ -23,23 +23,37 @@ lui_obj_t * lui_view_group_create(int x,int y) {
     return obj;
 }
 
-void lui_view_group_horizontal_move(lui_obj_t * obj, lui_bool val) {
+void lui_view_group_back_color_set(lui_obj_t * obj, lui_color5658_t color) {
+    if(obj == NULL) return;
     lui_view_group_t * view_group = obj->val;
+    if(view_group == NULL) return;
+    view_group->back_color = color;
+}
+
+void lui_view_group_horizontal_move(lui_obj_t * obj, lui_bool val) {
+    if(obj == NULL) return;
+    lui_view_group_t * view_group = obj->val;
+    if(view_group == NULL) return;
     view_group->horizontal_move = val;
 }
 
 void lui_view_group_vertical_move(lui_obj_t * obj, lui_bool val) {
+    if(obj == NULL) return;
     lui_view_group_t * view_group = obj->val;
+    if(view_group == NULL) return;
     view_group->vertical_move = val;
 }
 
 void lui_view_group_set_size(lui_obj_t * obj, int width, int length) {
+    if(obj == NULL) return;
     lui_obj_set_width(obj,width);
     lui_obj_set_length(obj,length);
 }
 
 static void lui_view_group_design (struct _lui_obj_t * obj, lui_point_t *point) {
+    if(obj == NULL) return;
     lui_view_group_t * view_group = obj->val;
+    if(view_group == NULL) return;
     lui_draw_frame(point->x,
                     point->y,
                     obj->layout.size.width,
@@ -49,7 +63,9 @@ static void lui_view_group_design (struct _lui_obj_t * obj, lui_point_t *point) 
 int c_x = 0;
 int c_y = 0;
 static void lui_view_group_event(lui_touch_val_t *val) {
+    if(val == NULL) return;
     lui_view_group_t * view_group = val->obj->val;
+    if(view_group == NULL) return;
     if(val->falg == 2) {
         c_x = val->abs_x;
         c_y = val->abs_y;
