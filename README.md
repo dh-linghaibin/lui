@@ -6,6 +6,9 @@
     * 图层控制
     
 * Example
+
+![avatar](Snipaste_2018-10-03_17-37-31.png)
+
 ```c
     lui_obj_t * icon = lui_create_icon(0,0);
     lui_icon_set_path(icon,LIP_INTERNAL,(char *)desk_jpg);

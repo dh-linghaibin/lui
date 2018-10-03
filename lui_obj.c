@@ -358,6 +358,7 @@ void _lui_obj_even(lui_obj_t * obj, int x, int y, uint8_t flag) {
     }
 }
 
+/* everything base time so need tick count even touch or sollow or other */
 void lui_obj_even(int x, int y, uint8_t flag) {
     if((flag == 0 || flag == 1) && touch_val.event != NULL) {
         touch_val.abs_x = x - (touch_val.rel_x - touch_val.abs_x);
